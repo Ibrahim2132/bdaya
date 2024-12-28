@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Company departments</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+  #table1 {
+    display: none;
+}
+.hide-col {
+  display: none;
+}
+      .details-container {
+  display: none;
+  margin-left: 20px;
+  padding: 10px;
+  border-left: 2px solid #ccc;
+  background-color: #f9f9f9;
+}
+.cards-container {
+    max-height: 400px; /* يمكنك تغيير القيمة حسب المساحة التي تريدها */
+    overflow-y: auto; /* تفعيل التمرير العمودي */
+}
+
+.card-details .company-departs:hover {
+  background-color: #f0f0f0;
+}
+.company-card h1, .company-card h3 {
+    font-size: 18px;  /* زيادة حجم الخط */
+    line-height: 1.6; /* زيادة المسافة بين الأسطر */
+}
+
+/* تكبير حجم الخط للعناوين داخل الكارت */
+.company-card .company-name {
+    font-size: 20px; /* تكبير اسم الشركة */
+    font-weight: bold;
+}
+.navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+/* تكبير حجم الخط للأقسام */
+.company-card .depart-name {
+    font-size: 16px; /* تكبير حجم خط اسم القسم */
+    font-weight: normal;
+}
+
+/* تكبير حجم الخط للأرقام */
+.company-card .employee-num {
+    font-size: 14px; /* تكبير حجم الخط للعدد */
+    font-weight: bold;
+}
+
+    </style>
+  </head>
+  <body>
+     
+      <div class="main-content">
+        <div id="sidebar" class="sidebar">
+          <div class="logo">
+            <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+          </div>
+          <ul>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+                ><i class="fa-solid fa-house"></i> Dashboard
+                <i class="fas fa-caret-down"></i
+              ></a>
+              <ul id="dropdown-1" class="dropdown">
+                <li><a href="administrator">  Administrators</a></li>
+                <li><a href="manager_adm">  Managers</a></li>
+                <li><a href="managertomanger_adm">  Managers to manager</a></li>
+                <li><a href="company_cards_adm">  company cards</a></li>
+                
+                <li>
+                  <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
+                    <i class="fas fa-caret-right"></i>
+                  </a>
+                  <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                    <li><a href="student"> Add Students</a></li>
+                    <li><a href="employee"> Add Employees</a></li>
+                  </ul>
+                </li>
+              
+              </ul>
+            </li>
+            <li>
+              <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+            </li>
+            <li>
+              <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+         
+        </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+
+        <div class="main-section">
+          <!-- Navigation Steps -->
+          <div class="navigation-steps">
+            <i class="fas fa-home"></i>
+            <span>Home > Dashboard > Cards </span>
+          </div>
+
+          <div class="first-div">
+            <div class="cards-container">
+              {% for branch in data %}
+            <div class="company-card">
+                <div class="card-header">
+                    <h1 class="company-name">{{ branch.branch_name }}</h1>
+                </div>
+                
+                <div class="card-details">
+                    <div class="company-departs">
+                        <div class="depart-details">
+                            <i class="fa-solid fa-users"></i>
+                            <h3 class="depart-name">Total Employees</h3>
+                        </div>
+                        <h3 class="employee-num">{{ branch.total_employees }}</h3>
+                    </div>
+                </div>
+                
+                <div class="card-details">
+                    <div class="company-departs" >
+                        <div class="depart-details">
+                           
+                            <h3 class="depart-name" data-backend-value="ttt">Head</h3>
+                        </div>
+                        <h3 class="employee-num">{{ branch.total_heads }}</h3>
+                    </div>
+                    
+                </div>
+
+                <div class="card-details">
+                    <div class="company-departs" >
+                        <div class="depart-details">
+                     
+                            <h3 class="depart-name" data-backend-value="True">Manager</h3>
+                        </div>
+                        <h3 class="employee-num">{{ branch.total_managers }}</h3>
+                    </div>
+                    
+                </div>
+
+                <div class="card-details">
+                    <div class="company-departs">
+                        <div class="depart-details">
+                            
+                            <h3 class="depart-name">Employee</h3>
+                        </div>
+                        <h3 class="employee-num">{{ branch.total_employees }}</h3>
+                    </div>
+                    
+                </div>
+                {% for col1_value, count in branch.col2_counts.items() %}
+                <div class="card-details">
+                    <div class="company-departs">
+                        <div class="depart-details">
+                            <h3 class="depart-name" data-backend-value="{{ col1_value }}">Employees in {{ col1_value }}</h3>
+                        </div>
+                        <h3 class="employee-num">{{ count }}</h3>
+                    </div>
+                </div>
+                
+            {% endfor %}
+            {% for col1_value, count in branch.col1_counts.items() %}
+            <div class="card-details">
+                <div class="company-departs">
+                    <div class="depart-details">
+                        <h3 class="depart-name" data-backend-value="{{ col1_value }}">Employees in {{ col1_value }}</h3>
+                    </div>
+                    <h3 class="employee-num">{{ count }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+            {% for col1_value, count in branch.col3_counts.items() %}
+            <div class="card-details">
+                <div class="company-departs">
+                    <div class="depart-details">
+                        <h3 class="depart-name" data-backend-value="{{ col1_value }}">Employees in {{ col1_value }}</h3>
+                    </div>
+                    <h3 class="employee-num" data-backend-value="{{ col1_value }}">{{ count }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+            {% for col1_value, count in branch.col4_counts.items() %}
+            <div class="card-details">
+                <div class="company-departs">
+                    <div class="depart-details">
+                        <h3 class="depart-name" data-backend-value="{{ col1_value }}">Employees in {{ col1_value }}</h3>
+                    </div>
+                    <h3 class="employee-num">{{ count }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+            {% for col1_value, count in branch.col5_counts.items() %}
+            <div class="card-details">
+                <div class="company-departs">
+                    <div class="depart-details">
+                        <h3 class="depart-name" data-backend-value="{{ col1_value }}">Employees in {{ col1_value }}</h3>
+                    </div>
+                    <h3 class="employee-num">{{ count }}</h3>
+                </div>
+            </div>
+            {% endfor %}
+
+
+            </div>
+            {% endfor %}
+
+            </div>
+          </div>
+        
+        </div>
+        <div class="second-div">
+          <div class="search-filters">
+            <div class="input-row">
+              <div class="input-container">
+                <input
+                type="text"
+                class="hide-col"
+                id="search-query1"
+                placeholder="Enter keywords separated by space"
+                oninput="filterTable1()"
+              />
+              </div>
+            </div>
+          </div>
+          <div class="table-section">
+            <table  id="table1">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>Name</th>
+                  <th>major</th>
+                  <th>country</th>
+                  <th>province</th>
+                  <th>branch</th>
+                  <th class="hide-col">col1</th>
+                  <th class="hide-col">col2</th>
+                  <th class="hide-col">col3</th>
+                  <th class="hide-col">col4</th>
+                  <th class="hide-col">col5</th>
+                  <th class="hide-col">is_manager</th>
+                  <th class="hide-col">is_head</th>
+                 
+                </tr>
+              </thead>
+              <tbody>
+                {% for employee in employees %}
+                <tr>
+                
+                  <td>{{ employee.id }}</td>
+                  <td>{{ employee.username }}</td>
+                  <td>{{ employee.major }}</td>
+                  <td>{{ employee.country }}</td>
+                  <td>{{ employee.province }}</td>
+                  <td>{{ employee.branch }}</td>
+
+                  <td class="hide-col">{{ employee.col1 }}</td>
+                  <td class="hide-col">{{ employee.col2 }}</td>
+                  <td class="hide-col">{{ employee.col3 }}</td>
+                  <td class="hide-col">{{ employee.col4 }}</td>
+                  <td class="hide-col">{{ employee.col5 }}</td>
+                  <td class="hide-col">{{ employee.is_manager }}</td>
+                  <td class="hide-col">{{ employee.is_head }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          </div>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  const inputField = document.getElementById("search-query1");
+  const table = document.getElementById("table1"); // الحصول على الجدول
+  const clickableItems = document.querySelectorAll(".company-departs");
+
+  clickableItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      // الحصول على اسم الفرع
+      const branchName = item.closest(".company-card").querySelector(".company-name").textContent;
+
+      // الحصول على قيمة الباك من data-backend-value
+      let backendValue = item.querySelector(".depart-name").getAttribute("data-backend-value");
+      backendValue = backendValue ? backendValue : ""; 
+      // تحديث حقل الإدخال
+      inputField.value = `${branchName} ${backendValue}`;
+      table.style.display = "table";
+
+      // تطبيق الفلتر
+      filterTable1();
+    });
+  });
+});
+
+      function toggleDetails(id) {
+  const detailsSection = document.getElementById(id);
+
+  if (detailsSection.style.display === "none" || detailsSection.style.display === "") {
+    detailsSection.style.display = "block";
+  } else {
+    detailsSection.style.display = "none";
+  }
+}
+document.querySelectorAll(".employee-checkbox").forEach((checkbox) => {
+  checkbox.addEventListener("change", () => {
+    const allCheckboxes = document.querySelectorAll(
+      "#table2 tbody .employee-checkbox"
+    );
+    const allChecked = Array.from(allCheckboxes).every(
+      (cb) => cb.checked || cb.closest("tr").style.display === "none"
+    );
+
+    document.getElementById("select-all").checked = allChecked;
+  });
+});
+
+      function toggleSelectAll() {
+ 
+  const selectAllCheckbox = document.getElementById("select-all");
+  const isChecked = selectAllCheckbox.checked;
+
+  const rows = document.querySelectorAll("#table2 tbody tr");
+
+  rows.forEach((row) => {
+    if (row.style.display !== "none") {
+      const checkbox = row.querySelector(".employee-checkbox");
+      if (checkbox) {
+        checkbox.checked = isChecked;
+      }
+    }
+  });
+}
+
+    function filterTable() {
+  // جلب النص المدخل
+  let searchQuery = document.getElementById("search-query").value.toLowerCase();
+
+  // تقسيم النص إلى كلمات مفتاحية
+  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+
+  // جلب الجدول والصفوف
+  let table = document.getElementById("table2");
+  let rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let cells = rows[i].getElementsByTagName("td");
+    let rowText = "";
+
+    // دمج النصوص داخل الصف
+    for (let j = 0; j < cells.length; j++) {
+      rowText += cells[j].textContent.toLowerCase() + " ";
+    }
+
+    // التحقق من تطابق جميع الكلمات المفتاحية
+    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+    // إظهار أو إخفاء الصف بناءً على النتيجة
+    rows[i].style.display = allMatch ? "" : "none";
+  }
+}
+function filterTable1() {
+  // جلب النص المدخل
+  let searchQuery = document.getElementById("search-query1").value.toLowerCase();
+
+  // تقسيم النص إلى كلمات مفتاحية
+  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+
+  // جلب الجدول والصفوف
+  let table = document.getElementById("table1");
+  let rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let cells = rows[i].getElementsByTagName("td");
+    let rowText = "";
+
+    // دمج النصوص داخل الصف
+    for (let j = 0; j < cells.length; j++) {
+      rowText += cells[j].textContent.toLowerCase() + " ";
+    }
+
+    // التحقق من تطابق جميع الكلمات المفتاحية
+    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+    // إظهار أو إخفاء الصف بناءً على النتيجة
+    rows[i].style.display = allMatch ? "" : "none";
+  }}
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

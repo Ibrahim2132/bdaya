@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrators</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+      .div-title {
+    text-align: center; /* توسيط النص */
+    font-size: 24px; /* تكبير حجم الخط إذا لزم الأمر */
+    font-weight: bold; /* جعل النص عريضًا */
+    margin: 20px 0; /* إضافة مساحة من الأعلى والأسفل */
+}
+
+      .hidden {
+        display: none;
+      }
+      a {
+      position: relative; /* لجعل النقطة الحمراء تظهر فوق العنصر */
+      display: inline-flex; /* لجعل الأيقونة والنص في صف واحد */
+      align-items: center;  /* محاذاة العناصر عموديًا */
+    }
+
+    /* النقطة الحمراء */
+    .notification-dot {
+      width: 8px;             /* عرض النقطة */
+      height: 8px;            /* ارتفاع النقطة */
+      border-radius: 50%;      /* جعل النقطة دائرية */
+      background-color: red;   /* اللون الأحمر للنقطة */
+      position: absolute;      /* تحديد موضع النقطة */
+      top: -2px;               /* رفع النقطة قليلاً للأعلى */
+      left: 93%;              /* وضع النقطة إلى أقصى اليمين */
+      transform: translateX(10px); /* تحريك النقطة قليلاً إلى اليمين */
+      display: inline-block;    /* جعل النقطة تظهر بشكل بلوك مدمج */
+    }
+
+    </style>
+  </head>
+  <body>
+    
+
+    <div class="main-content ">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="administrator">  Administrators</a></li>
+              <li><a href="manager_adm">  Managers</a></li>
+              <li><a href="managertomanger_adm">  Managers to manager</a></li>
+              <li><a href="company_cards_adm">  company cards</a></li>
+              
+              <li>
+                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
+                  <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="student"> Add Students</a></li>
+                  <li><a href="employee"> Add Employees</a></li>
+                </ul>
+              </li>
+            
+            </ul>
+          </li>
+          <li>
+            <a href="notification_admin">
+              <i class="fa-solid fa-bell"></i>
+              Notifications
+              {% if notification_dot_display %}
+                <span class="notification-dot"></span>
+              {% endif %}
+            </a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+    <!-- Burger Menu (Visible on mobile) -->
+    <div class="burger" onclick="toggleSidebar()">
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+    </div>
+      <div class="main-section">
+         <!-- Navigation Steps -->
+         <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Administrator </span>
+        </div>
+
+        <div class="first-div">
+          
+          {% if user_id %}
+          <div class="form-section">
+
+            <h1>Administrator</h1>
+            <form method="POST" action="{{ url_for('administrator') }}">
+              <div class="input-row">
+                <div class="input-container">
+                  <input type="email" name="email" value="{{ col_data.email or '' }}" />
+                  <label>Email</label>
+                </div>
+                <div class="input-container">
+                  <input type="text" name="name" value="{{ col_data.name or '' }}" />
+                  <label>Name</label>
+                </div>
+                
+              </div>
+            
+              {% if col_name.c1 %}
+              <div class="input-container">
+                <input type="text" name="c1" value="{{ col_data.col1 or '' }}" />
+                <label>{{ col_name.c1 }}</label>
+              </div>
+              {% endif %}
+            
+              {% if col_name.c2 %}
+              <div class="input-container">
+                <input type="text" name="c2" value="{{ col_data.col2 or '' }}" />
+                <label>{{ col_name.c2 }}</label>
+              </div>
+              {% endif %}
+              <div class="input-row">
+              {% if col_name.c3 %}
+              <div class="input-container">
+                <input type="text" name="c3" value="{{ col_data.col3 or '' }}" />
+                <label>{{ col_name.c3 }}</label>
+              </div>
+              {% endif %}
+            
+              {% if col_name.c4 %}
+              <div class="input-container">
+                <input type="text" name="c4" value="{{ col_data.col4 or '' }}" />
+                <label>{{ col_name.c4 }}</label>
+              </div>
+              {% endif %}
+              </div>
+              {% if col_name.c5 %}
+              <div class="input-container">
+                <input type="text" name="c5" value="{{ col_data.col5 or '' }}" />
+                <label>{{ col_name.c5 }}</label>
+              </div>
+              {% endif %}
+            
+              <button class="add-btn" type="submit">Update</button>
+            </form>
+            
+          </div>
+          {% endif %}
+          
+          <div class="students-section">
+            <h1 class="div-title">Students Awaiting Approval</h1>
+            
+            <table  border=".5" class="table-section">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for student in unaccepted_students %}
+                <tr>
+                  <td>{{ student.id }}</td>
+                  <td>{{ student.username }}</td>
+                  <td>{{ student.email }}</td>
+                  <td>
+                    <a href="{{ url_for('accept_student', student_id=student.id) }}" class="accept-icon">
+                      <i class="fa-solid fa-check"></i>
+                    </a>
+                    <a href="{{ url_for('delete_student', student_id=student.id) }}" class="delete-icon">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <br>
+            <h1 class="div-title">accepted students</h1>
+            <table border=".5" class="table-section">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Date of Birth</th>
+                  <th>Level</th>
+                  <th>University</th>
+                  <th>Specialization</th>
+                  <th>Phone Number</th>
+                  <th>Country</th>
+                  <th>Province</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for students in accepted_students %}
+                <tr>
+                  <td>{{ students.id }}</td>
+                  <td>{{ students.username }}</td>
+                  <td>{{ students.email }}</td>
+                  <td>{{ students.birthdate }}</td>
+                  <td>{{ students.stage }}</td>
+                  <td>{{ students.university }}</td>
+                  <td>{{ students.major }}</td>
+                  <td>{{ students.phone }}</td>
+                  <td>{{ students.country }}</td>
+                  <td>{{ students.province }}</td>
+                  <td>
+                    <a href="{{ url_for('delete_student', student_id=students.id) }}" class="delete-icon">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div> 
+        </div>
+
+      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

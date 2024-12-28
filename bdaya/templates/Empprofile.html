@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>student</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <div class="logo">
+        <img src="" alt="Logo" />
+      </div>
+      <ul>
+        <li>
+          <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+            ><i class="fa-solid fa-house"></i> Dashboard
+            <i class="fas fa-caret-down"></i
+          ></a>
+          <ul id="dropdown-1" class="dropdown">
+            <li><a href="owner.html"> > Company owner</a></li>
+            <li><a href="organizer.html"> > Organizer</a></li>
+            <li><a href="administrator.html"> > Administrators</a></li>
+            <li><a href="manager.html"> > Managers</a></li>
+            <li><a href="manager to manager.html"> > Managers to manager</a></li>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
+                <i class="fas fa-caret-right"></i>
+              </a>
+              <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                <li><a href="student.html"> > Students</a></li>
+                <li><a href="employee.html"> > Employees</a></li>
+              </ul>
+            </li>
+          
+          </ul>
+        </li>
+        <li>
+          <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+        </li>
+        <li>
+          <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Burger Menu (Visible on mobile) -->
+    <div class="burger" onclick="toggleSidebar()">
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+    </div>
+
+    <div class="main-content ">
+      <div class="main-section">
+         <!-- Navigation Steps -->
+         <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Administrator </span>
+        </div>
+
+        <div class="first-div">
+          <div class="form-section">
+            <h1>student</h1>
+            <form>
+              <div class="input-row">
+                <div class="input-container">
+                  <input type="text" required />
+                  <label>Name</label>
+                </div>
+                <div class="input-container">
+                  <input type="text" required />
+                  <label>Job title</label>
+                </div>
+              </div>
+              <div class="input-container">
+                <input type="email" required />
+                <label>Email</label>
+              </div>
+              {% if departments %}
+              <div class="input-container">
+                
+                <select id="job-title" name="job_title" required>
+                  <option value="" disabled selected>Choose a Department</option>
+                      {% for department in departments %}
+                          <option value="{{ department.code }}">{{ department.name }}</option>
+                      {% endfor %}
+                      <label for="job-title">department</label>
+                </select>
+              </div>
+              {% endif %}
+              {% if ClassStudents %}
+              <div class="input-container">
+                
+                <select id="job-title" name="job_title" required>
+                  <option value="" disabled selected>Choose a Class</option>
+                      {% for ClassStudent in ClassStudents %}
+                          <option value="{{ ClassStudent.code }}">{{ ClassStudent.name }}</option>
+                      {% endfor %}
+                      <label for="job-title">department</label>
+                </select>
+              </div>
+              {% endif %}
+              {% if GradeStudents %}
+              <div class="input-container">
+                
+                <select id="job-title" name="job_title" required>
+                  <option value="" disabled selected>Choose a Grade</option>
+                      {% for GradeStudent in GradeStudents %}
+                          <option value="{{ GradeStudent.code }}">{{ GradeStudent.name }}</option>
+                      {% endfor %}
+                      <label for="job-title">department</label>
+                </select>
+              </div>
+              {% endif %}
+              {% if specializationStudents %}
+              <div class="input-container">
+                
+                <select id="job-title" name="job_title" required>
+                  <option value="" disabled selected>Choose a specialization</option>
+                      {% for specializationStudent in specializationStudents %}
+                          <option value="{{ specializationStudent.code }}">{{ specializationStudent.name }}</option>
+                      {% endfor %}
+                      <label for="job-title">specialization</label>
+                </select>
+              </div>
+              {% endif %}
+              <div class="input-container">
+                <input type="text" required />
+                <label>Workplace</label>
+              </div>
+             
+              
+              <button class="add-btn"> save</button>
+            </form>
+          </div>
+          
+
+        </div>
+
+    <script src="Script.js"></script>
+  </body>
+</html>

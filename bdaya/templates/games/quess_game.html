@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لعبة الكلمة الناقصة</title>
+  <style>
+    /* تصميم عصري وجذاب */
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #8e44ad, #3498db);
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    #word {
+      font-size: 2rem;
+      margin: 20px;
+      letter-spacing: 5px;
+    }
+
+    #letters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 600px;
+    }
+
+    .letter {
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ddd;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+
+    .letter:hover {
+      background-color: #bbb;
+    }
+
+    .letter.disabled {
+      background-color: #eee;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin: 20px;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    #man {
+      margin: 20px;
+      font-size: 5rem;
+      line-height: 1;
+      text-align: center;
+    }
+
+    /* تخصيص زر المحاولة */
+    button {
+      background: #66bb6a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #43a047;
+    }
+  </style>
+</head>
+<body>
+  <h1>لعبة الكلمة الناقصة</h1>
+  <div id="man">😀</div>
+  <div id="word">_ _ _ _ _</div>
+  <div id="status">محاولات متبقية: 6</div>
+  <div id="letters"></div>
+  <div id="score">النتيجة: 0</div>
+  <ul id="wordListOriginal" style="display: none;">
+    {% for word in word_list %}
+        <li class="word-item">{{ word }}</li>
+    {% endfor %}
+  </ul>
+  <script>
+    const words = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent.toUpperCase()); // تحويل الكلمات إلى أحرف كبيرة
+    let currentWordIndex = 0; // تتبع ترتيب الكلمة الحالية
+    let word = words[currentWordIndex]; // أول كلمة
+    const maxAttempts = 6;
+
+    let guessedWord = [];
+    let attemptsLeft = maxAttempts;
+    let guessedLetters = [];
+    let score = 0;
+
+    const wordElement = document.getElementById("word");
+    const statusElement = document.getElementById("status");
+    const lettersElement = document.getElementById("letters");
+    const manElement = document.getElementById("man");
+    const scoreElement = document.getElementById("score");
+
+    function initializeGame() {
+      word = words[currentWordIndex];
+      guessedWord = Array(word.length).fill("_");
+      attemptsLeft = maxAttempts;
+      guessedLetters = [];
+      updateDisplay();
+      resetLetters();
+    }
+
+    function updateDisplay() {
+      wordElement.textContent = guessedWord.join(" ");
+      statusElement.textContent = `محاولات متبقية: ${attemptsLeft}`;
+      scoreElement.textContent = `النتيجة: ${score}`;
+      updateMan();
+    }
+
+    function updateMan() {
+      const faces = ["😀", "😰", "😵", "😢", "😭", "💀"];
+      manElement.textContent = faces[maxAttempts - attemptsLeft];
+    }
+
+    function createLetters() {
+      lettersElement.innerHTML = "";
+      for (let i = 65; i <= 90; i++) {
+        const letter = String.fromCharCode(i);
+        const letterElement = document.createElement("div");
+        letterElement.classList.add("letter");
+        letterElement.textContent = letter;
+        letterElement.addEventListener("click", () => handleGuess(letter));
+        lettersElement.appendChild(letterElement);
+      }
+    }
+
+    function resetLetters() {
+      const letterElements = document.querySelectorAll(".letter");
+      letterElements.forEach(el => el.classList.remove("disabled"));
+    }
+
+    function handleGuess(letter) {
+      letter = letter.toUpperCase(); // تحويل الحرف إلى كبير
+
+      if (guessedLetters.includes(letter)) return;
+
+      guessedLetters.push(letter);
+      const letterElements = document.querySelectorAll(".letter");
+      letterElements.forEach(el => {
+        if (el.textContent === letter) {
+          el.classList.add("disabled");
+        }
+      });
+
+      if (word.includes(letter)) {
+        for (let i = 0; i < word.length; i++) {
+          if (word[i] === letter) {
+            guessedWord[i] = letter;
+          }
+        }
+      } else {
+        attemptsLeft--;
+        updateMan();
+      }
+
+      updateDisplay();
+      checkGameStatus();
+    }
+
+    function checkGameStatus() {
+      if (!guessedWord.includes("_")) {
+        score++;
+        nextWordOrEndGame();
+      } else if (attemptsLeft === 0) {
+        nextWordOrEndGame();
+      }
+    }
+
+    function nextWordOrEndGame() {
+      if (currentWordIndex < words.length - 1) {
+        currentWordIndex++;
+        initializeGame();
+      } else {
+        wordElement.textContent = "🎉 انتهت اللعبة!";
+        statusElement.textContent = `النتيجة النهائية: ${score} / ${words.length}`;
+        disableAllLetters();
+      }
+    }
+
+    function disableAllLetters() {
+      const letterElements = document.querySelectorAll(".letter");
+      letterElements.forEach(el => el.classList.add("disabled"));
+    }
+
+    // بدء اللعبة
+    createLetters();
+    initializeGame();
+  </script>
+</body>

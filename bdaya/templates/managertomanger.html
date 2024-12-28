@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manager to manager</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style4.css') }}"
+    />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              {% if sector_id %}
+              <li><a href="owner">  profile</a></li>
+              {% elif organizer_id %}
+              <li><a href="organizer">  profile</a></li>
+              {% endif %}
+              <li><a href="manager">  Managers</a></li>
+              <li><a href="managertomanger">  Managers to manager</a></li>
+  
+              <li>
+                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Show Data
+                  <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="company_cards">  company cards</a></li>
+                  <li><a href="show_adm">  show administrators</a></li>
+                  <li><a href="show_org">  show organizers</a></li>
+                  <li><a href="show_emp">  show employees</a></li>
+                  <li><a href="show_stu">  show students</a></li>
+  
+                </ul>
+              </li>
+              <!--
+              <li><a href="organizer">  Organizer</a></li>
+              <li><a href="administrator">  Administrators</a></li>
+              <li><a href="manager">  Managers</a></li>
+              <li><a href="managertomanger">  Managers to manager</a></li>-->
+             <!-- -->
+            
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+      <div class="main-section">
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Manager to managers </span>
+        </div>
+        <form method="POST" action="/assign_manager1">
+          <div class="second-div">
+            <!-- First Table Filter -->
+            <div class="search-filters">
+              <div class="input-row">
+                <div class="input-container">
+                <input
+                  type="text"
+                  id="search-query1"
+                  placeholder="Enter keywords separated by space"
+                  oninput="filterTable1()"
+                /></div>
+              </div>
+            </div>
+            <div class="table-section">
+              <h1 class="div-title">Select Manager to Managers</h1>
+              <table border="1" id="table1">
+                <thead>
+                  <tr>
+                    <th>Select</th>
+                    <th>id</th>
+                    <th>Name</th>
+                    
+                    <th>major</th>
+                    <th>country</th>
+                    <th>province</th>
+                    {% if employee_name.c5 %}
+                    <th>{{employee_name.c5}}</th>
+                    {% endif %}
+                    {% if employee_name.c4 %}
+                    <th>{{employee_name.c4}}</th>
+                    {% endif %}
+                    {% if employee_name.c3 %}
+                    <th>{{employee_name.c3}}</th>
+                    {% endif %}
+                    {% if employee_name.c1 %}
+                    <th>{{employee_name.c1}}</th>
+                    {% endif %}
+                    {% if employee_name.c2 %}
+                    <th>{{employee_name.c2}}</th>
+                    {% endif %}
+                    <th>branch</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for manager in managers %}
+                  <tr>
+                    <td>
+                      <input
+                        type="radio"
+                        name="manager"
+                        value="{{ manager.id }}"
+                        required
+                      />
+                    </td>
+                    <td>{{ manager.id }}</td>
+                    <td>{{ manager.username }}</td>
+                
+                    <td>{{ manager.major }}</td>
+                    <td>{{ manager.country }}</td>
+                    <td>{{ manager.province }}</td>
+                    {% if employee_name.c5 %}
+                    <td>{{ manager.col1 }}</td>
+                    {% endif %}
+                    {% if employee_name.c4 %}
+                    <td>{{ manager.col2 }}</td>
+                    {% endif %}
+                    {% if employee_name.c3 %}
+                    <td>{{ manager.col3 }}</td>
+                    {% endif %}
+                    {% if employee_name.c1 %}
+                    <td>{{ manager.col4 }}</td>
+                    {% endif %}
+                    {% if employee_name.c2 %}
+                    <td>{{ manager.col5 }}</td>
+                    {% endif %}
+                    <td>{{ manager.branch }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <br /><br /><br />
+            <!-- Second Table Filter -->
+            <div class="search-filters">
+              <div class="input-row">
+                <div class="input-container">
+                  <input
+                  type="text"
+                  id="search-query"
+                  placeholder="Enter keywords separated by space"
+                  oninput="filterTable()"
+                />
+              </div>
+            </div>
+            <div class="table-section">
+              <h1 class="div-title">Select Managers</h1>
+              <table border="1" id="table2">
+                <thead>
+                  <tr>
+                    <th>
+                      <input type="checkbox" id="select-all" onclick="toggleSelectAll()" />
+                    </th>
+                    <th>id</th>
+                    <th>Name</th>
+                  
+                    <th>major</th>
+                    <th>country</th>
+                    <th>province</th>
+                    {% if employee_name.c5 %}
+                    <th>{{employee_name.c5}}</th>
+                    {% endif %}
+                    {% if employee_name.c4 %}
+                    <th>{{employee_name.c4}}</th>
+                    {% endif %}
+                    {% if employee_name.c3 %}
+                    <th>{{employee_name.c3}}</th>
+                    {% endif %}
+                    {% if employee_name.c1 %}
+                    <th>{{employee_name.c1}}</th>
+                    {% endif %}
+                    {% if employee_name.c2 %}
+                    <th>{{employee_name.c2}}</th>
+                    {% endif %}
+                    <th>branch</th>
+                    <th>manager id</th>
+                    <th>manager name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for manager in managers %}
+                  <tr>
+                    <td>
+                      <input
+                        type="checkbox"
+                        name="employees"
+                        value="{{ manager.id }}"
+                        class="employee-checkbox"
+                      />
+                    </td>
+                    <td>{{ manager.id }}</td>
+                    <td>{{ manager.username }}</td>
+            
+                    <td>{{ manager.major }}</td>
+                    <td>{{ manager.country }}</td>
+                    <td>{{ manager.province }}</td>
+                    {% if employee_name.c5 %}
+                    <td>{{ manager.col1 }}</td>
+                    {% endif %}
+                    {% if employee_name.c4 %}
+                    <td>{{ manager.col2 }}</td>
+                    {% endif %}
+                    {% if employee_name.c3 %}
+                    <td>{{ manager.col3 }}</td>
+                    {% endif %}
+                    {% if employee_name.c1 %}
+                    <td>{{ manager.col4 }}</td>
+                    {% endif %}
+                    {% if employee_name.c2 %}
+                    <td>{{ manager.col5 }}</td>
+                    {% endif %}
+                    <td>{{ manager.branch }}</td>
+                    <td>{{ manager.manager_id }}</td>
+                    <td>{{ manager.manager_name }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <br /><br />
+              <button type="submit" class="manager-btn">Assign Manager</button>
+            </div>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+     document.querySelectorAll(".employee-checkbox").forEach((checkbox) => {
+  checkbox.addEventListener("change", () => {
+    const allCheckboxes = document.querySelectorAll(
+      "#table2 tbody .employee-checkbox"
+    );
+    const allChecked = Array.from(allCheckboxes).every(
+      (cb) => cb.checked || cb.closest("tr").style.display === "none"
+    );
+
+    document.getElementById("select-all").checked = allChecked;
+  });
+});
+
+      function toggleSelectAll() {
+  // جلب حالة مربع "تحديد الكل"
+  const selectAllCheckbox = document.getElementById("select-all");
+  const isChecked = selectAllCheckbox.checked;
+
+  // جلب كل صفوف الجدول
+  const rows = document.querySelectorAll("#table2 tbody tr");
+
+  rows.forEach((row) => {
+    // إذا كان الصف مرئيًا، قم بتحديد أو إلغاء تحديد مربع الاختيار
+    if (row.style.display !== "none") {
+      const checkbox = row.querySelector(".employee-checkbox");
+      if (checkbox) {
+        checkbox.checked = isChecked;
+      }
+    }
+  });
+}
+       function filterTable() {
+  // جلب النص المدخل
+  let searchQuery = document.getElementById("search-query").value.toLowerCase();
+
+  // تقسيم النص إلى كلمات مفتاحية
+  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+
+  // جلب الجدول والصفوف
+  let table = document.getElementById("table2");
+  let rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let cells = rows[i].getElementsByTagName("td");
+    let rowText = "";
+
+    // دمج النصوص داخل الصف
+    for (let j = 0; j < cells.length; j++) {
+      rowText += cells[j].textContent.toLowerCase() + " ";
+    }
+
+    // التحقق من تطابق جميع الكلمات المفتاحية
+    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+    // إظهار أو إخفاء الصف بناءً على النتيجة
+    rows[i].style.display = allMatch ? "" : "none";
+  }
+}
+function filterTable1() {
+  // جلب النص المدخل
+  let searchQuery = document.getElementById("search-query1").value.toLowerCase();
+
+  // تقسيم النص إلى كلمات مفتاحية
+  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+
+  // جلب الجدول والصفوف
+  let table = document.getElementById("table1");
+  let rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let cells = rows[i].getElementsByTagName("td");
+    let rowText = "";
+
+    // دمج النصوص داخل الصف
+    for (let j = 0; j < cells.length; j++) {
+      rowText += cells[j].textContent.toLowerCase() + " ";
+    }
+
+    // التحقق من تطابق جميع الكلمات المفتاحية
+    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+    // إظهار أو إخفاء الصف بناءً على النتيجة
+    rows[i].style.display = allMatch ? "" : "none";
+  }
+}
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

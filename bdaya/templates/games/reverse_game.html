@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scramble Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            background: #ffffff20;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .scrambled-letters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .letter {
+            background: #4fc3f7;
+            color: white;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+        .letter:hover {
+            transform: scale(1.2);
+            background: #29b6f6;
+        }
+        .input-area {
+            margin: 20px 0;
+            position: relative;
+        }
+        input {
+            padding: 10px;
+            width: 80%;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            background: #66bb6a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #43a047;
+        }
+        #message {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .score {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        .mic-btn {
+            position: absolute;
+            right: 10%;
+            top: 10px;
+            background: #ff6f61;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .mic-btn:hover {
+            background: #e64a19;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Scramble Game</h1>
+    <div class="container">
+        <p>{{current_difficulty}}</p>
+        <div class="scrambled-letters" id="lettersContainer"></div>
+        <div class="input-area">
+            <input type="text" id="playerWord" placeholder="Arrange the letters">
+            <button class="mic-btn" onclick="startListening()">🎤</button>
+        </div>
+        <button onclick="checkWord()">Submit</button>
+        <p id="message"></p>
+        <p class="score">Score: <span id="score">0</span></p>
+        <ul id="wordListOriginal" style="display: none;">
+            {% for word in word_list %}
+                <li class="word-item">{{ word }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        const words = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+        let currentWordIndex = 0;
+        let currentWord = "";
+        let scrambledWord = "";
+        let score = 0;
+
+        const lettersContainer = document.getElementById("lettersContainer");
+        const message = document.getElementById("message");
+        const scoreDisplay = document.getElementById("score");
+        const playerWordInput = document.getElementById("playerWord");
+
+        function shuffleWord(word) {
+            const letters = word.split("");
+            for (let i = letters.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [letters[i], letters[j]] = [letters[j], letters[i]];
+            }
+            return letters.join("");
+        }
+
+        function displayScrambledWord() {
+            if (currentWordIndex < words.length) {
+                currentWord = words[currentWordIndex];
+                scrambledWord = shuffleWord(currentWord);
+                lettersContainer.innerHTML = "";
+                scrambledWord.split("").forEach(letter => {
+                    const letterDiv = document.createElement("div");
+                    letterDiv.className = "letter";
+                    letterDiv.textContent = letter.toUpperCase();
+                    lettersContainer.appendChild(letterDiv);
+                });
+            } else {
+                window.location.href = `/results?score=${score}`;
+            }
+        }
+
+        function checkWord() {
+            const input = playerWordInput.value.trim().toLowerCase();
+            if (input === currentWord) {
+                score++;
+                message.textContent = "Correct! Keep going!";
+                message.style.color = "lightgreen";
+                scoreDisplay.textContent = score;
+                currentWordIndex++; 
+                displayScrambledWord();
+            } else {
+                message.textContent = "Try again!";
+                message.style.color = "red";
+            }
+            playerWordInput.value = "";
+        }
+
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            playerWordInput.value = transcript;
+        };
+
+        recognition.onerror = (event) => {
+            message.textContent = "Error with microphone!";
+            message.style.color = "red";
+        };
+
+        function startListening() {
+            recognition.start();
+        }
+
+        displayScrambledWord(); 
+    </script>
+</body>
+</html>

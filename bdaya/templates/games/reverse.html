@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Students</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}" /> 
+    
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="administrator">  Administrators</a></li>
+              <li><a href="manager">  Managers</a></li>
+              <li><a href="managertomanger">  Managers to manager</a></li>
+              <li>
+                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
+                  <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="student">  Students</a></li>
+                  <li><a href="employee">  Employees</a></li>
+                </ul>
+              </li>
+            
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="choice1-div">
+        <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{{ url_for('reverse', exam_id=exam_id) }}"
+      >
+        <div class="fourth-div">
+          <div class="upload-section">
+          <div class="input-container">
+
+            <select name="col1" id="col1" required>
+              <option value="" disabled selected>Select Difficulty</option>
+              <option value="Easy" {% if current_difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+              <option value="Medium" {% if current_difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+              <option value="Hard" {% if current_difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+          </select>
+          
+          </div>
+      
+          <div class="input-container">
+            <input
+              type="text"
+              name="Word_Puzzle"
+              id="Word_Puzzle"
+              placeholder="Enter Word"
+            />
+            <label>Enter Word</label>
+          </div>
+      
+          <div class="uploade-btns">
+            <input
+              type="file"
+              name="Word_Puzzle_file"
+              class="add-btn"
+              accept=".xlsx,.xls"
+            />
+            <button type="submit" class="upload-btn">Upload Excel File</button>
+          </div>
+        </div>
+      </form>
+      
+      <div class="table-section">
+        {% if games|length %}
+        <table>
+          <thead>
+            <tr>
+              <th>Word</th>
+              <th>Difficulty</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for game in games %}
+            <tr>
+              <td>{{ game.words }}</td>
+              <td>{{ game.difficulty }}</td>
+              <td>
+                <a href="{{ url_for('delete_reverse', word_id=game.id) }}">
+                  <i class="fa-solid fa-trash-can"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+      </div>
+      <div class="play-game-btn">
+        <a href="{{ url_for('reverse_game', exam_id=exam_id) }}" class="btn btn-primary">
+          Go to Game
+        </a>
+      </div>
+    </div>
+      </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Employee</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      .page-title {
+        color: #0D7C66; /* لون النص الأساسي */
+    text-align: center; /* محاذاة النص إلى المنتصف */
+    font-size: 2rem; /* تكبير حجم النص قليلاً */
+    font-weight: 900; /* زيادة وزن الخط لجعله أكثر وضوحًا */
+    font-family: 'Poppins', sans-serif; /* الخط المستخدم */
+    margin: 20px auto; /* تقليل المسافة العمودية */
+    padding: 10px 20px; /* إضافة حواف داخلية */
+    border-radius: 8px; /* زوايا دائرية */
+    background-color: #ffffffe9; /* خلفية خفيفة لإبراز العنوان */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ظل خفيف للعناصر */
+    text-transform: uppercase; /* تحويل النص إلى أحرف كبيرة */
+    width: 80%;
+    }
+  
+
+/* الرسالة المنبثقة */
+.question-icon:hover::after {
+  content: attr(data-tooltip); /* استخدام النص من الخاصية data-tooltip */
+  position: absolute;
+  top: 50%; /* محاذاة الرسالة عموديًا */
+  left: 120%; /* إزاحة إلى اليمين */
+  transform: translateY(-50%); /* لتوسيط النص */
+  background-color: #f5f5f5; /* خلفية الرسالة */
+  color: #0D7C66; /* لون النص */
+  padding: 10px; /* حواف داخلية */
+  border-radius: 8px; /* زوايا دائرية */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ظل خفيف */
+  font-size: 0.9rem; /* حجم النص */
+  line-height: 1.4; /* ارتفاع الأسطر لتقسيم النص */
+  width: 220px; /* عرض ثابت للرسالة */
+  text-align: left; /* محاذاة النص إلى اليسار */
+  white-space: normal; /* السماح بلف النص */
+  z-index: 1000; /* التأكد من ظهورها فوق العناصر الأخرى */
+}
+
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .choice2-div {
+    background-color: rgba(255, 255, 255); /* لون الخلفية */
+    padding: 10px; /* تقليل المسافة الداخلية */
+    padding-top: 15px; /* تقليل المسافة الداخلية من الأعلى */
+    border-radius: 10px; /* الزوايا الدائرية */
+    margin: 5px 10px 10px 10px; /* تقليل المسافة الخارجية */
+}
+
+      .hidden {
+        display: none;
+      }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}" /> 
+   
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .page-title {
+        color: #0D7C66; /* لون النص الأساسي */
+    text-align: center; /* محاذاة النص إلى المنتصف */
+    font-size: 2rem; /* تكبير حجم النص قليلاً */
+    font-weight: 900; /* زيادة وزن الخط لجعله أكثر وضوحًا */
+    font-family: 'Poppins', sans-serif; /* الخط المستخدم */
+    margin: 20px auto; /* تقليل المسافة العمودية */
+    padding: 10px 20px; /* إضافة حواف داخلية */
+    border-radius: 8px; /* زوايا دائرية */
+    background-color: #ffffffe9; /* خلفية خفيفة لإبراز العنوان */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ظل خفيف للعناصر */
+    text-transform: uppercase; /* تحويل النص إلى أحرف كبيرة */
+    width: 80%;
+    }
+  
+
+/* الرسالة المنبثقة */
+.question-icon:hover::after {
+  content: attr(data-tooltip); /* استخدام النص من الخاصية data-tooltip */
+  position: absolute;
+  top: 50%; /* محاذاة الرسالة عموديًا */
+  left: 120%; /* إزاحة إلى اليمين */
+  transform: translateY(-50%); /* لتوسيط النص */
+  background-color: #f5f5f5; /* خلفية الرسالة */
+  color: #0D7C66; /* لون النص */
+  padding: 10px; /* حواف داخلية */
+  border-radius: 8px; /* زوايا دائرية */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ظل خفيف */
+  font-size: 0.9rem; /* حجم النص */
+  line-height: 1.4; /* ارتفاع الأسطر لتقسيم النص */
+  width: 220px; /* عرض ثابت للرسالة */
+  text-align: left; /* محاذاة النص إلى اليسار */
+  white-space: normal; /* السماح بلف النص */
+  z-index: 1000; /* التأكد من ظهورها فوق العناصر الأخرى */
+}
+
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .choice2-div {
+    background-color: rgba(255, 255, 255); /* لون الخلفية */
+    padding: 10px; /* تقليل المسافة الداخلية */
+    padding-top: 15px; /* تقليل المسافة الداخلية من الأعلى */
+    border-radius: 10px; /* الزوايا الدائرية */
+    margin: 5px 10px 10px 10px; /* تقليل المسافة الخارجية */
+}
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="administrator">  Administrators</a></li>
+              <li><a href="manager_adm">  Managers</a></li>
+              <li><a href="managertomanger_adm">  Managers to manager</a></li>
+              <li><a href="company_cards_adm">  company cards</a></li>
+              
+              <li>
+                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
+                  <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="student"> Add Students</a></li>
+                  <li><a href="employee"> Add Employees</a></li>
+                </ul>
+              </li>
+            
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+      <div class="main-section">
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Users > Add Employees </span>
+        </div>
+        <h1 class="page-title">Employees Information to Record</h1>
+        <div class="choice1-div">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for('employee') }}"
+          >
+            <div class="uploade-section">
+              <form method="POST" action="/student" class="col-form">
+                <div class="input-container col-input">
+                  <input
+                    type="text"
+                    name="col1"
+                    id="col1"
+                    value="{{ student_data.c1 if student_data else '' }}"
+                    required
+                  />
+                  <label for="col1">Column 1</label>
+                  <button type="submit" class="update-btn">Update</button>
+                </div>
+              </form>
+              <div class="input-container">
+                <input type="text" name="job_title" />
+                <label>{{ student_data.c1 if student_data else '' }}</label>
+                <i
+                  class="fa-solid fa-circle-question question-icon"
+                  data-tooltip="Add the words you want to include vertically, with the title in the first row and the words listed below it in a column format."
+                ></i>
+                <small class="helper-text"
+                  >This is the number of company branches.</small
+                >
+              </div>
+              <div class="upload-btns">
+                <input
+                  type="file"
+                  class="add-btn"
+                  name="job_excel_file"
+                  accept=".xlsx,.xls"
+                />
+                <button type="submit" class="upload-btn">
+                  <i class="fas fa-upload"></i>
+                  Upload Excel File
+                </button>
+              </div>
+            </div>
+            <div class="table-section">
+              {% if job_titles|length%}
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ student_data.c1 if student_data else '' }}</th>
+                    <th>id</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for job in job_titles %}
+                  <tr>
+                    <td>{{ job.name }}</td>
+                    <td>{{ job.id_admin }}</td>
+                    <td>
+                    
+                      <a
+                        href="{{ url_for('delete_job_title', job_id=job.id) }}"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td colspan="4"  style="text-align: center; font-weight: bold; color: #0D7C66; ">
+                      {% if job_titles|length%}
+                      Total {{ student_data.c1 if student_data else '' }}: {{ job_titles|length }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+        <div class="choice-div">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for('employee') }}"
+          >
+            <div class="upload-section">
+              <form method="POST" action="/student" class="col-form">
+                <div class="input-container col-input">
+                  <input
+                    type="text"
+                    name="col2"
+                    id="col1"
+                    value="{{ student_data.c2 if student_data else '' }}"
+                    required
+                  />
+                  <label for="col1">Column 2</label>
+                  <button type="submit" class="update-btn">Update</button>
+                </div>
+              </form>
+              <div class="input-container">
+                <input type="text" name="specialization_name" />
+                <label>{{ student_data.c2 if student_data else '' }}</label>
+                <i
+                  class="fa-solid fa-circle-question question-icon"
+                  data-tooltip="Add the words you want to include vertically, with the title in the first row and the words listed below it in a column format."
+                ></i>
+                <small class="helper-text"
+                  >This is the number of company branches.</small
+                >
+              </div>
+              <div class="upload-btns">
+                <input
+                  type="file"
+                  class="add-btn"
+                  name="specialization_excel_file"
+                  accept=".xlsx,.xls"
+                />
+                <button type="submit" class="upload-btn">
+                  <i class="fas fa-upload"></i>
+                  Upload Excel File
+                </button>
+              </div>
+            </div>
+            <div class="table-section">
+              {% if specializations_list|length%}
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ student_data.c2 if student_data else '' }}</th>
+                    <th>id</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for specialization in specializations_list %}
+                  <tr>
+                    <td>{{ specialization.name }}</td>
+                    <td>{{ specialization.id_admin }}</td>
+                    <td>
+                      <a
+                        href="{{ url_for('delete_specialization', specialization_id=specialization.id) }}"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td colspan="4" style="text-align: center; font-weight: bold; color: #0D7C66; ">
+                      {% if specializations_list|length%}
+                      Total {{ student_data.c2 if student_data else '' }}: {{ specializations_list|length }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+        <div class="choice-div">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for('employee') }}"
+          >
+            <div class="upload-section">
+              <form method="POST" action="/student" class="col-form">
+                <div class="input-container col-input">
+                  <input
+                    type="text"
+                    name="col3"
+                    id="col1"
+                    value="{{ student_data.c3 if student_data else '' }}"
+                    required
+                  />
+                  <label for="col1">Column 3</label>
+                  <button type="submit" class="update-btn">Update</button>
+                </div>
+              </form>
+              <div class="input-container">
+                <input type="text" name="administrative_title_name" />
+                <label>{{ student_data.c3 if student_data else '' }}</label>
+                <!--Question mark for how to upload file excel-->
+                <i
+                  class="fa-solid fa-circle-question question-icon"
+                  data-tooltip="Add the words you want to include vertically, with the title in the first row and the words listed below it in a column format."
+                ></i>
+                <small class="helper-text"
+                  >This is the number of company branches.</small
+                >
+              </div>
+              <div class="upload-btns">
+                <input
+                  type="file"
+                  name="administrative_titles_file"
+                  accept=".xlsx,.xls"
+                  class="add-btn"
+                />
+                <button type="submit" class="upload-btn">
+                  <i class="fas fa-upload"></i> Upload Excel File
+                </button>
+              </div>
+            </div>
+            <div class="table-section">
+              {% if Administrative_Titles|length%}
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ student_data.c3 if student_data else '' }}</th>
+                    <th>id</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for Administrative_Title in Administrative_Titles %}
+                  <tr>
+                    <td>{{ Administrative_Title.name }}</td>
+                    
+                    <td>{{ Administrative_Title.id_admin }}</td>
+                    <td>
+                      <a
+                        href="{{ url_for('delete_administrative_title', title_id=Administrative_Title.id) }}"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td colspan="4"  style="text-align: center; font-weight: bold; color: #0D7C66; ">
+                      {% if Administrative_Titles|length%}
+                      Total {{ student_data.c3 if student_data else '' }}: {{ Administrative_Titles|length }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+        <div class="choice-div">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for('employee') }}"
+          >
+            <div class="upload-section">
+              <form method="POST" action="/student" class="col-form">
+                <div class="input-container col-input">
+                  <input
+                    type="text"
+                    name="col4"
+                    id="col1"
+                    value="{{ student_data.c4 if student_data else '' }}"
+                    required
+                  />
+                  <label for="col1">Column 4</label>
+                  <button type="submit" class="update-btn">Update</button>
+                </div>
+              </form>
+              <div class="input-container">
+                <input type="text" name="department_name" />
+                <label>{{ student_data.c4 if student_data else '' }}</label>
+                <i
+                  class="fa-solid fa-circle-question question-icon"
+                  data-tooltip="Add the words you want to include vertically, with the title in the first row and the words listed below it in a column format."
+                ></i>
+                <small class="helper-text"
+                  >This is the number of company branches.</small
+                >
+              </div>
+              <div class="upload-btns">
+                <input
+                  type="file"
+                  name="departments_file"
+                  accept=".xlsx,.xls"
+                  class="add-btn"
+                />
+                <button type="submit" class="upload-btn">
+                  <i class="fas fa-upload"></i> Upload Excel File
+                </button>
+              </div>
+            </div>
+            <div class="table-section">
+              {% if DepartmentEmployees|length%}
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ student_data.c4 if student_data else '' }}</th>
+                    <th>id</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for DepartmentEmployee in DepartmentEmployees %}
+                  <tr>
+                    <td>{{ DepartmentEmployee.name }}</td>
+                    
+                    <td>{{ DepartmentEmployee.id_admin }}</td>
+                    <td>
+                      <a
+                        href="{{ url_for('delete_department1', department_id=DepartmentEmployee.id) }}"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td colspan="4"  style="text-align: center; font-weight: bold; color: #0D7C66; ">
+                      {% if DepartmentEmployees|length%}
+                      Total {{ student_data.c4 if student_data else '' }}: {{ DepartmentEmployees|length }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+        <div class="choice-div">
+          <form
+            method="POST"
+            enctype="multipart/form-data"
+            action="{{ url_for('employee') }}"
+          >
+            <div class="upload-section">
+              <form method="POST" action="/student" class="col-form">
+                <div class="input-container col-input">
+                  <input
+                    type="text"
+                    name="col5"
+                    id="col1"
+                    value="{{ student_data.c5 if student_data else '' }}"
+                    required
+                  />
+                  <label for="col1">Column 5</label>
+                  <button type="submit" class="update-btn">Update</button>
+                </div>
+              </form>
+              <div class="input-container">
+                <input type="text" name="department_name1" />
+                <label>{{ student_data.c5 if student_data else '' }}</label>
+                <i
+                  class="fa-solid fa-circle-question question-icon"
+                  data-tooltip="Add the words you want to include vertically, with the title in the first row and the words listed below it in a column format."
+                ></i>
+                <small class="helper-text"
+                  >This is the number of company branches.</small
+                >
+              </div>
+              <div class="upload-btns">
+                <input
+                  type="file"
+                  name="departments_file1"
+                  accept=".xlsx,.xls"
+                  class="add-btn"
+                />
+                <button type="submit" class="upload-btn">
+                  <i class="fas fa-upload"></i> Upload Excel File
+                </button>
+              </div>
+            </div>
+            <div class="table-section">
+              {% if DepartmentEmployees1|length%}
+              <table>
+                <thead>
+                  <tr>
+                    <th>{{ student_data.c5 if student_data else '' }}</th>
+                    <th>id</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for DepartmentEmployee in DepartmentEmployees1 %}
+                  <tr>
+                    <td>{{ DepartmentEmployee.name }}</td>
+                    
+                    <td>{{ DepartmentEmployee.id_admin }}</td>
+                    <td>
+                      <a
+                        href="{{ url_for('delete_department2', department_id=DepartmentEmployee.id) }}"
+                      >
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  <tr>
+                    <td colspan="4"  style="text-align: center; font-weight: bold; color: #0D7C66; ">
+                      {% if DepartmentEmployees1|length%}
+                      Total {{ student_data.c5 if student_data else '' }}: {{ DepartmentEmployees1|length }}
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+        
+        <div class="invitation-div">
+          <div class="send-invitation">
+            <label class="invitation">Send to employee</label>
+            <div class="copy">
+              <h3>{{ sector_code_display}}</h3>
+              <i class="fas fa-copy" id="copyIcon" onclick="copyToClipboard()">
+                
+              </i>
+              <span
+                id="copyMessage"
+                style="display: none; color: #0d7c66; margin-left: 10px"
+                >copied!</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+    
+      function copyToClipboard() {
+        const fullCode = document.getElementById("sectorCodeDisplay").innerText;
+        navigator.clipboard.writeText(fullCode).then(() => {
+          const copyMessage = document.getElementById("copyMessage");
+          copyMessage.style.display = "inline";
+          setTimeout(() => {
+            copyMessage.style.display = "none";
+          }, 2000); 
+        });
+      }
+       
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+        .icon {
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+        .input-container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+        input {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 12px;
+            font-size: 1.2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+        input:focus {
+            outline: none;
+            border: 2px solid #ff758c;
+            box-shadow: 0 0 10px rgba(255, 117, 140, 0.5);
+        }
+        .microphone {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-20%);
+            background: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease;
+        }
+        .microphone:hover {
+            background: #e94e3c;
+        }
+        button {
+            background: #ff6f61;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #e94e3c;
+            transform: scale(1.1);
+        }
+        .score {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Translation Game</h1>
+    <div class="input-container">
+        <input type="text" id="translationInput" placeholder="Enter the translation...">
+        <button class="microphone" id="microphoneButton">🎤</button>
+    </div>
+    <div class="container">
+        <div class="icon" id="icon">🍎</div>
+        <button id="submitButton">Submit</button>
+        <div id="message"></div>
+        <div class="score">Score: <span id="score">0</span></div>
+        <ul id="wordListEnglish" style="display: none;">
+            {% for word in word_list %}
+                <li class="word-item">{{ word }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- الترجمات -->
+        <ul id="wordListArabic" style="display: none;">
+            {% for translate in translate_list %}
+                <li class="translate-item">{{ translate }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        const englishWords = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+        const arabicWords = Array.from(document.querySelectorAll('.translate-item')).map(item => item.textContent);
+        const words = englishWords.map((word, index) => ({
+            icon: word,
+            english: arabicWords[index] || ''
+        }));
+
+        let currentWordIndex = 0;
+        let score = 0;
+
+        const iconElement = document.getElementById('icon');
+        const inputElement = document.getElementById('translationInput');
+        const messageElement = document.getElementById('message');
+        const scoreElement = document.getElementById('score');
+        const submitButton = document.getElementById('submitButton');
+        const microphoneButton = document.getElementById('microphoneButton');
+
+        function loadWord() {
+            iconElement.textContent = words[currentWordIndex].icon;
+            inputElement.value = '';
+            messageElement.textContent = '';
+        }
+
+        function checkAnswer() {
+            const userAnswer = inputElement.value.trim().toLowerCase();
+            const correctAnswer = words[currentWordIndex].english.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                messageElement.textContent = "Correct! 🎉";
+                messageElement.style.color = "green";
+            } else {
+                messageElement.textContent = `Wrong! Correct answer: ${correctAnswer}`;
+                messageElement.style.color = "red";
+            }
+
+            scoreElement.textContent = score;
+
+            currentWordIndex = (currentWordIndex + 1) % words.length;
+            setTimeout(loadWord, 1500);
+        }
+
+        submitButton.addEventListener('click', checkAnswer);
+
+        // Web Speech API
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        microphoneButton.addEventListener('click', () => {
+            recognition.start();
+        });
+
+        recognition.addEventListener('result', (event) => {
+            const transcript = event.results[0][0].transcript;
+            inputElement.value = transcript;
+        });
+
+        recognition.addEventListener('error', (event) => {
+            alert('Speech recognition error: ' + event.error);
+        });
+
+        loadWord();
+    </script>
+</body>
+</html>

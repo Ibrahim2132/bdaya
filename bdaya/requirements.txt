@@ -1,0 +1,6 @@
+flask
+gunicorn
+flask_sqlalchemy
+openpyxl
+werkzeug.utils
+sqlalchemy

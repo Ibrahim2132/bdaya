@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Columns</title>
+</head>
+<body>
+    <h2>Choose Columns to Display</h2>
+    <form method="POST" action="/update_preferences">
+        <label>
+            <input type="checkbox" name="columns" value="id" checked> ID
+        </label>
+        <label>
+            <input type="checkbox" name="columns" value="username" checked> Username
+        </label>
+        <label>
+            <input type="checkbox" name="columns" value="email" checked> Email
+        </label>
+        <label>
+            <input type="checkbox" name="columns" value="password" checked> Password
+        </label>
+        <label>
+            <input type="checkbox" name="columns" value="account_type" checked> Account Type
+        </label>
+        <br><br>
+        <button type="submit">Save Preferences</button>
+    </form>
+</body>
+</html>

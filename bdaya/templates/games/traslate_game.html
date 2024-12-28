@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي الترجمة</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            text-align: center;
+            direction: rtl;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            background: #ffffff20;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .word {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        input {
+            padding: 10px;
+            font-size: 1.2rem;
+            width: 250px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        input:focus {
+            outline: none;
+            border: 2px solid #ffffff90;
+        }
+        .voice-button {
+            background: #ff6f61;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .voice-button:hover {
+            background: #e94e3c;
+        }
+        button {
+            background: #ff6f61;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #e94e3c;
+        }
+        .score {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>تحدي الترجمة</h1>
+    <div class="container">
+        <div class="word" id="word">Apple</div>
+        <input type="text" id="translationInput" placeholder="اكتب الترجمة هنا...">
+        <button class="voice-button" onclick="startVoiceRecognition()">🎤</button>
+        <button id="submitButton">إرسال</button>
+        <div id="message"></div>
+        <div class="score">النتيجة: <span id="score">0</span></div>
+
+        <!-- الكلمات الإنجليزية -->
+        <ul id="wordListEnglish" style="display: none;">
+            {% for word in word_list %}
+                <li class="word-item">{{ word }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- الترجمات -->
+        <ul id="wordListArabic" style="display: none;">
+            {% for translate in translate_list %}
+                <li class="translate-item">{{ translate }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        const englishWords = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+        const arabicWords = Array.from(document.querySelectorAll('.translate-item')).map(item => item.textContent);
+
+        // دمج الكلمات الإنجليزية والترجمة في مصفوفة واحدة
+        const words = englishWords.map((word, index) => ({
+            english: word,
+            arabic: arabicWords[index] || ''
+        }));
+        let currentWordIndex = 0;
+        let score = 0;
+
+        const wordElement = document.getElementById('word');
+        const inputElement = document.getElementById('translationInput');
+        const messageElement = document.getElementById('message');
+        const scoreElement = document.getElementById('score');
+        const submitButton = document.getElementById('submitButton');
+
+        function loadWord() {
+            if (currentWordIndex < words.length) {
+                wordElement.textContent = words[currentWordIndex].english;
+                inputElement.value = '';
+                messageElement.textContent = '';
+            } else {
+                // الانتقال إلى صفحة السكور مع تمرير النتيجة
+                window.location.href = `score.html?score=${score}`;
+            }
+        }
+
+        function checkAnswer() {
+            const userAnswer = inputElement.value.trim();
+            const correctAnswer = words[currentWordIndex].arabic;
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                messageElement.textContent = "إجابة صحيحة! 🎉";
+                messageElement.style.color = "green";
+            } else {
+                messageElement.textContent = `إجابة خاطئة! الإجابة الصحيحة: ${correctAnswer}`;
+                messageElement.style.color = "red";
+            }
+
+            scoreElement.textContent = score;
+
+            currentWordIndex++;
+            setTimeout(loadWord, 1500);
+        }
+
+        submitButton.addEventListener('click', checkAnswer);
+
+        // التسجيل الصوتي
+        function startVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("عذرًا، المتصفح لا يدعم خاصية التعرف على الصوت.");
+                return;
+            }
+
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "ar-EG"; // تعيين اللغة إلى العربية
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                inputElement.value = transcript;
+            };
+            recognition.onerror = (event) => {
+                alert("حدث خطأ أثناء التعرف على الصوت: " + event.error);
+            };
+            recognition.start();
+        }
+
+        loadWord();
+    </script>
+</body>
+</html>

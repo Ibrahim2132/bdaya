@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Students</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <div class="logo">
+        <img src="" alt="Logo" />
+      </div>
+      <ul>
+        <li>
+          <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+            ><i class="fa-solid fa-house"></i> Dashboard
+            <i class="fas fa-caret-down"></i
+          ></a>
+          <ul id="dropdown-1" class="dropdown">
+            <li><a href="owner.html"> > Company owner</a></li>
+            <li><a href="organizer.html"> > Organizer</a></li>
+            <li><a href="administrator.html"> > Administrators</a></li>
+            <li><a href="manager.html"> > Managers</a></li>
+            <li><a href="manager to manager.html"> > Managers to manager</a></li>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
+                <i class="fas fa-caret-right"></i>
+              </a>
+              <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                <li><a href="student"> > Students</a></li>
+                <li><a href="employee"> > Employees</a></li>
+              </ul>
+            </li>
+          
+          </ul>
+        </li>
+        <li>
+          <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+        </li>
+        <li>
+          <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+        </li>
+        <li>
+          <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Burger Menu (Visible on mobile) -->
+    <div class="burger" onclick="toggleSidebar()">
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+    </div>
+
+    <div class="main-content ">
+
+       
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Users > Students </span>
+        </div>
+      
+        <div class="choice1-div">
+          <form method="POST" enctype="multipart/form-data" action="{{ url_for('student') }}">
+          
+            <div class="fourth-div">
+                <div class="upload-section">
+                    <div class="input-container">
+                        <input type="text" name="specialization_name" id="specialization_name" >
+                        <label>Specialization</label>
+                    </div>
+                    <div class="uploade-btns">
+                        <!-- إدخال ملف Excel -->
+                        <input type="file" name="excel_file_specialization"class="add-btn" accept=".xlsx,.xls">
+                        <button type="submit" class="upload-btn">Upload Excel File</button>
+                    </div>
+                    <!-- زر "Add" مضاف هنا -->
+                   
+                </div>
+            </div>
+            <div class="table-section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Specialization</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for specialization in specializations %}
+                            <tr>
+                                <td>{{ specialization.name }}</td>
+                                <td>
+                                    <!-- رابط حذف التخصص -->
+                                    <a href="{{ url_for('delete_specializations', company_id=specialization.id) }}">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                    
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        <br><br>
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('student') }}">
+          <div class="fourth-div">
+              <div class="upload-section">
+                  <div class="input-container">
+                      <input type="text" name="grade_name" id="grade_name">
+                      <label>Grade</label>
+                  </div>
+                  <div class="uploade-btns">
+                      <input type="file" name="excel_file_grade"class="add-btn" accept=".xlsx,.xls">
+                      <button type="submit" class="upload-btn">Upload Excel File</button>
+                  </div>
+              </div>
+          </div>
+      
+          <div class="table-section">
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Grade</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for grade in grades %}
+                          <tr>
+                              <td>{{ grade.name }}</td>
+                              <td>
+                                  <a href="{{ url_for('delete_grades', grade_id=grade.id) }}">
+                                      <i class="fa-solid fa-trash-can"></i>
+                                  </a>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+      </form>
+
+      <form method="POST" enctype="multipart/form-data" action="{{ url_for('student') }}">
+      <div class="choice-div">
+        <div class="upload-section">
+            <div class="input-container">
+                <input type="text" name="class_name"  />
+                <label>Class</label>
+            </div>
+            <div class="uploade-btns">
+                <input type="file" name="excel_file_class"class="add-btn" accept=".xlsx,.xls">
+                <button type="submit" class="upload-btn">Upload Excel File</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="table-section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for class in classes %}
+                    <tr>
+                        <td>{{ class.name }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_class', class_id=class.id) }}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </form>
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('student') }}">
+  <div class="choice-div">
+    <div class="upload-section">
+        <div class="input-container">
+            <input type="text" name="department_name" />
+            <label>Department</label>
+        </div>
+        <div class="uploade-btns">
+            <input type="file" name="excel_file_department" class="add-btn"accept=".xlsx,.xls">
+            <button type="submit" class="upload-btn">Upload Excel File</button>
+        </div>
+    </div>
+</div>
+<div class="table-section">
+    <table>
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in departments %}
+                <tr>
+                    <td>{{ department.name }}</td>
+                    <td>
+                        <a href="{{ url_for('delete_department', department_id=department.id) }}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</form>
+
+      <div class="invitation-div">
+        <div class="send-invitation">
+            <label class="invitation" onclick="generateCode()">code for student</label>
+            <div class="copy">
+                <h3 id="sectorCodeDisplay">{{ sector_code+"S" }}</h3>
+                <i class="fas fa-copy" id="copyIcon" onclick="copyToClipboard()"></i>
+                <span id="copyMessage" style="display: none; color: #0D7C66; margin-left: 10px;">Copied!</span>
+            </div>
+        </div>
+      </div>
+
+
+        </div>
+      </div>
+    </div>
+  <script>
+    const sectorCode = "{{ sector_code }}"; // يتم تمريره من Flask
+
+function generateCode() {
+    const fullCode = sectorCode + "S";
+    document.getElementById("sectorCodeDisplay").innerText = fullCode;
+}
+
+function copyToClipboard() {
+    const fullCode = document.getElementById("sectorCodeDisplay").innerText;
+    navigator.clipboard.writeText(fullCode).then(() => {
+        const copyMessage = document.getElementById("copyMessage");
+        copyMessage.style.display = "inline";
+        setTimeout(() => {
+            copyMessage.style.display = "none";
+        }, 2000); // إخفاء الرسالة بعد ثانيتين
+    });
+}
+  </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
+

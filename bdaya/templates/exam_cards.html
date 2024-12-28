@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>category cards</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .card-btn {
+  display: inline-block;
+ 
+  color: #fff; /* لون النص */
+  padding: 10px 15px; /* مسافة داخلية للأزرار */
+  border: none; /* إزالة الحدود */
+  border-radius: 5px; /* زوايا مستديرة */
+  font-size: 14px; /* حجم النص */
+  cursor: pointer; /* المؤشر عند التمرير */
+  text-align: center; /* محاذاة النص في المنتصف */
+  width: 100px; /* عرض موحد لجميع الأزرار */
+  box-sizing: border-box; /* ضمان أن العرض يشمل الـ padding */
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #0D7C66;
+}
+
+.popup-content h2 {
+  color: #0D7C66;
+  margin-bottom: 20px;
+}
+
+.popup-content p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.popup-btn {
+  background-color: #0D7C66;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-btn:hover {
+  background-color: #0b6a56;
+}
+
+.popup-close {
+  margin-top: 20px;
+  background-color: #ff4757;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-close:hover {
+  background-color: #d63031;
+}
+.popup-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 2px solid #0D7C66;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+.popup-content input:focus {
+  outline: none;
+  border-color: #0b6a56;
+  box-shadow: 0px 0px 5px rgba(13, 124, 102, 0.5);
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.popup-buttons .popup-btn,
+.popup-buttons .popup-close {
+  flex: 1;
+  margin: 0 5px;
+}
+
+    </style>
+  </head>
+  <body>
+    
+     
+
+      <div class="main-content">
+        <div id="sidebar" class="sidebar">
+          <div class="logo">
+            <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+          </div>
+          <ul>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+                ><i class="fa-solid fa-house"></i> Dashboard
+                <i class="fas fa-caret-down"></i
+              ></a>
+              <ul id="dropdown-1" class="dropdown">
+                <li><a href="employee_profile">  profile</a></li>
+                <li><a href="exam_cards">  Add category</a></li>
+              </ul>
+             
+           
+             
+            </li>
+            <li>
+              <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+            </li>
+            <li>
+              <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+         
+        </div>
+
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+        <div class="main-section">
+        
+          <div class="navigation-steps">
+            <i class="fas fa-home"></i>
+            <span>Home > Dashboard > category </span>
+          </div>
+           
+          <div class="first-div">
+            <div class="add-lesson-form">
+              <div class="icon-heading">
+                <i class="fa-solid fa-folder"></i>
+                <h1>Add category</h1>
+              </div>
+              <br>
+              <form action="{{ url_for('add_lesson') }}" method="POST" enctype="multipart/form-data">
+                <div class="input-row">
+                  <div class="input-container">
+                    <input type="text" name="title" required />
+                    <label>category Title</label>
+                  </div>
+                </div>
+               
+                  <div class="uploade-btns">
+                    <input type="file" name="image" accept="image/*" class="add-btn" />
+                    <button type="submit" class="upload-btn">
+                      <i class="fa-solid fa-plus"></i> Add category
+                    </button>
+                  </div>
+              </form>
+            </div>
+
+  <div class="icon-heading">
+    <i class="fa-solid fa-search"></i>
+    <h1>Search</h1>
+  </div>
+  <div class="second-lesson-div">
+    <div class="search-filters">
+      <div class="input-row">
+        <div class="input-container">
+          <input type="text" id="search-input" placeholder="Search by name" />
+          <label>Search by name</label>
+        </div>
+      </div>
+    </div>
+  
+    <div class="cards-container" id="cards-container">
+      {% for item in lessons_with_counts %}
+      <a href="{{ url_for('lesson_cards', chapter_id=item.lesson.id) }}" class="card-link">
+        <div class="card" data-title="{{ item.lesson.title }}">
+          <div class="card-image">
+            {% if item.lesson.image_path %}
+            <img src="{{ url_for('static', filename=item.lesson.image_path.split('static/')[1]) }}" alt="Uploaded Image">
+            {% else %}
+            <img src="{{ url_for('static', filename='assets/img1.jpg') }}" alt="Default Image">
+            {% endif %}
+            <h2 class="lesson-address">{{ item.lesson.title }}</h2>
+          </div>
+      
+          <div class="card-icons">
+            <div class="card-details">
+              <div class="detail"><i class="fa-regular fa-clock"></i>
+                <h3>{{ item.lesson.created_at.strftime('%I:%M %p %d/%m/%Y') }}</h3>
+              </div>
+              <div class="detail"><i class="fa-solid fa-pen"></i>
+                <h3>{{ item.lesson.updated_at.strftime('%I:%M %p %d/%m/%Y') }}</h3>
+              </div>
+              <!-- إضافة العدد مع أيقونة -->
+              <div class="detail">
+                <i class="fa-solid fa-book"></i> <!-- أيقونة كتاب -->
+                <h3>{{ item.lesson_count }} Lessons</h3>
+              </div>
+            </div>
+          </div>
+        </a>
+          <div class="card-action">
+            <form action="{{ url_for('delete_lesson', lesson_id=item.lesson.id) }}" method="POST">
+              <button class="card-btn "><i class="fa-solid fa-trash-can"></i> Delete</button>
+            </form>
+            <button class="card-btn edit" onclick="openPopup('{{ item.lesson.id }}', '{{ item.lesson.title }}')">
+              <i class="fa-solid fa-pen"></i> Edit
+            </button>
+          </div>
+        </div>
+      
+      {% endfor %}
+      
+    </div>
+  </div>
+  
+  
+  <!-- Popup لتعديل الاسم -->
+  <div id="editPopup" class="popup hidden">
+    <div class="popup-content">
+      <form id="editForm" action="" method="POST">
+        <h2>Edit Lesson</h2>
+        <input type="text" id="newTitle" name="title" placeholder="New Title" required />
+        <button type="submit"  class="popup-btn">Update</button>
+      </form>
+      <button class="popup-close" onclick="closePopup()">Close</button>
+    </div>
+  </div>
+        </div>
+          </div>
+        </div>
+      
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("search-input");
+  const cardsContainer = document.getElementById("cards-container");
+  const cards = cardsContainer.querySelectorAll(".card");
+
+  searchInput.addEventListener("input", (event) => {
+    const searchValue = event.target.value.toLowerCase();
+
+    cards.forEach((card) => {
+      const title = card.getAttribute("data-title").toLowerCase();
+      if (title.includes(searchValue)) {
+        card.style.display = "block"; // إظهار البطاقات المتطابقة
+      } else {
+        card.style.display = "none"; // إخفاء البطاقات غير المتطابقة
+      }
+    });
+  });
+});
+
+      function openPopup(lessonId, currentTitle) {
+  const popup = document.getElementById("editPopup");
+  const editForm = document.getElementById("editForm");
+  const titleInput = document.getElementById("newTitle");
+
+  // Set the current title in the input
+  titleInput.value = currentTitle;
+
+  // Set the form action dynamically
+  editForm.action = `/edit_lesson/${lessonId}`;
+
+  popup.classList.remove("hidden");
+}
+
+function closePopup() {
+  const popup = document.getElementById("editPopup");
+  popup.classList.add("hidden");
+}
+
+    </script>
+      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrators</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style4.css" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img src="" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a
+              href="#"
+              class="dropdown-toggle"
+              onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="owner.html"> > Company owner</a></li>
+              <li><a href="organizer.html"> > Organizer</a></li>
+              <li><a href="administrator.html"> > Administrators</a></li>
+              <li><a href="manager.html"> > Managers</a></li>
+
+              <li>
+                <a href="manager to manager.html"> > Managers to manager</a>
+              </li>
+
+              <li>
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  onclick="toggleDropdown(event, 'nested-dropdown')"
+                >
+                  > Users <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="student.html"> > Students</a></li>
+                  <li><a href="employee.html"> > Employees</a></li>
+                </ul>
+              </li>
+              <li><a href="lectures.html"> > Lectures</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > Matching </span>
+        </div>
+
+        <div class="question-container">
+          <div class="question-div">
+            <div class="textarea-div">
+              <textarea placeholder="Type your question here..."></textarea>
+            </div>
+            <div class="upload-div">
+              
+              
+              <div class="btns-div">
+                <button><i class="fas fa-image"></i> Upload Media</button>
+                <button>
+                  <i class="fas fa-plus"></i> Add Question
+                </button>
+              <i
+                class="fa-solid fa-circle-question  questionicon "
+                id="questionIcon"
+                data-tooltip="How to upload an excel file"
+              ></i>
+
+          
+              </div>
+              
+              
+            </div>
+            <!-- Modal to display the image -->
+            <div id="imageModal" class="modal">
+              <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <img
+                  src="assets/excel-img.jpg"
+                  alt="How to upload an Excel file"
+                  id="modalImage"
+                />
+              </div>
+            </div>
+
+            <div class="dropdown-div">
+              <div class="dropdown">
+                <label for="">Difficulty</label>
+                <select>
+                  <option>Select...</option>
+                </select>
+              </div>
+              <div class="dropdown">
+                <label for="">Importance</label>
+                <select>
+                  <option>Select...</option>
+                </select>
+              </div>
+              <div class="dropdown">
+                <label for="">Bloom's Taxonomy</label>
+                <select>
+                  <option>Select...</option>
+                </select>
+              </div>
+              <div class="dropdown">
+                <label for="">Grade</label>
+                <select>
+                  <option>Select...</option>
+                </select>
+              </div>
+              <div class="dropdown">
+                <label for="">Time (S)</label>
+                <select>
+                  <option>Select...</option>
+                </select>
+              </div>
+            </div>
+            <div class="answers-div">
+              <div class="answer">
+                <div class="input-container">
+                  
+                  <input type="text" placeholder="Type your answer here..." />
+                </div>
+              
+                    <input type="text" class="num-input" required />
+                  
+              </div>
+              <div class="answer">
+                <div class="input-container">
+                    
+                  <input type="text" placeholder="Type your answer here..." />
+                </div>
+                <input type="text" class="num-input" required />
+              </div>
+              <div class="answer">
+                <div class="input-container">
+                  
+                  <input type="text" placeholder="Type your answer here..." />
+                </div>
+                <input type="text" class="num-input" required />
+              </div>
+              <button class="add-answer-btn">
+                <i class="fas fa-plus"></i> Add Answer
+              </button>
+            </div>
+            <div class="plus-div">
+              <div class="plus-icon">
+                <i class="fas fa-plus"></i>
+              </div>
+            </div>
+          </div>
+          <div class="confirm-btns">
+            <div class="button-section">
+              <button class="save-btn">Save</button>
+              <button class="submit-btn">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script src="Script.js"></script> -->
+    <script>
+      // Get the modal and elements
+      const questionIcon = document.getElementById("questionIcon");
+      const imageModal = document.getElementById("imageModal");
+      const closeButton = document.querySelector(".close-button");
+
+      // Open the modal when the icon is clicked
+      questionIcon.addEventListener("click", () => {
+        imageModal.style.display = "block";
+      });
+
+      // Close the modal when the close button is clicked
+      closeButton.addEventListener("click", () => {
+        imageModal.style.display = "none";
+      });
+
+      // Close the modal when clicking outside the modal content
+      window.addEventListener("click", (event) => {
+        if (event.target === imageModal) {
+          imageModal.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

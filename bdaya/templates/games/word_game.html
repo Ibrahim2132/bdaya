@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Puzzle Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            color: #fff;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .container {
+            position: relative;
+            background: #ffffff20;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .letters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; 
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 300px;
+        }
+        .letter {
+            background: #ff8a65;
+            color: white;
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, background 0.3s;
+            cursor: pointer;
+        }
+        .letter:hover {
+            transform: scale(1.2);
+            background: #ff7043;
+        }
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            margin: 10px 0;
+            width: 70%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            background: #66bb6a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 5px;
+        }
+        button:hover {
+            background: #43a047;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background: #ffffff30;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+        }
+        #message {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        #timer {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        .word-container {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Puzzle Game</h1>
+    <div class="container">
+        <p>{{current_difficulty}}</p>
+        <p id="score">Score: 0</p>
+        <div class="word-container" id="wordContainer"></div>
+        <div class="letters" id="lettersContainer"></div>
+        <input type="text" id="wordInput" placeholder="Type the word or use voice input" />
+        <button id="voiceButton">🎙️ Record Voice</button>
+        <button id="submitButton">Submit</button>
+        <h3>Correct Words:</h3>
+        <ul id="wordList"></ul>
+        <p id="message"></p>
+        <ul id="wordListOriginal" style="display: none;">
+            {% for word in word_list %}
+                <li class="word-item">{{ word }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+<script>
+const dictionary = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+
+let currentWord = "";
+let score = 0;
+let usedWords = new Set();
+const correctWords = new Set();
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function generateLetters(word) {
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    const randomLetters = Array.from({ length: 8 }, () => alphabet[Math.floor(Math.random() * 26)]);
+    const wordLetters = Array.from(new Set(word.split('')));
+    const combinedLetters = [...new Set([...randomLetters, ...wordLetters])];
+    return shuffleArray(combinedLetters); 
+}
+
+function createWordWithMissingLetters() {
+    if (usedWords.size === dictionary.length) {
+        endGame();
+        return "";
+    }
+    
+    currentWord = dictionary[Math.floor(Math.random() * dictionary.length)];
+    while (usedWords.has(currentWord)) {
+        currentWord = dictionary[Math.floor(Math.random() * dictionary.length)];
+    }
+    
+    usedWords.add(currentWord); // Add the word to used words
+    const missingIndices = [];
+    while (missingIndices.length < 2) {
+        const randIndex = Math.floor(Math.random() * currentWord.length);
+        if (!missingIndices.includes(randIndex)) {
+            missingIndices.push(randIndex);
+        }
+    }
+    let wordWithMissing = currentWord.split('');
+    missingIndices.forEach(index => wordWithMissing[index] = '_');
+    return wordWithMissing.join('');
+}
+
+function updateGameBoard() {
+    const wordContainer = document.getElementById("wordContainer");
+    const lettersContainer = document.getElementById("lettersContainer");
+    wordContainer.textContent = createWordWithMissingLetters();
+    lettersContainer.innerHTML = "";
+    generateLetters(currentWord).forEach(letter => {
+        const letterDiv = document.createElement("div");
+        letterDiv.className = "letter";
+        letterDiv.textContent = letter.toUpperCase();
+        letterDiv.onclick = () => addLetterToWord(letter);
+        lettersContainer.appendChild(letterDiv);
+    });
+}
+
+function addLetterToWord(letter) {
+    const wordContainer = document.getElementById("wordContainer");
+    let wordText = wordContainer.textContent;
+    const missingIndex = wordText.indexOf('_');
+    if (missingIndex !== -1) {
+        wordText = wordText.substring(0, missingIndex) + letter + wordText.substring(missingIndex + 1);
+        wordContainer.textContent = wordText;
+        if (!wordText.includes('_')) checkWord(wordText);
+    }
+}
+
+function checkWord(word) {
+    const message = document.getElementById("message");
+    if (word === currentWord) {
+        correctWords.add(word);
+        score += word.length;
+        const li = document.createElement("li");
+        li.textContent = word;
+        document.getElementById("wordList").appendChild(li);
+        message.textContent = "Correct word!";
+        message.style.color = "lightgreen";
+        document.getElementById("score").textContent = `Score: ${score}`;
+    } else {
+        message.textContent = "Incorrect word. Try again!";
+        message.style.color = "red";
+    }
+    updateGameBoard();
+}
+
+function endGame() {
+    window.location.href = `/score?score=${score}`;
+}
+
+document.getElementById("submitButton").onclick = () => {
+    const wordInput = document.getElementById("wordInput").value.toLowerCase();
+    if (wordInput) checkWord(wordInput);
+    document.getElementById("wordInput").value = "";
+};
+
+document.getElementById("voiceButton").onclick = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+        alert("Speech recognition not supported in this browser.");
+        return;
+    }
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.onresult = event => {
+        document.getElementById("wordInput").value = event.results[0][0].transcript;
+    };
+    recognition.start();
+};
+
+updateGameBoard();
+</script>
+
+</body>
+</html>

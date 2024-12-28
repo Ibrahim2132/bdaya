@@ -1,0 +1,11 @@
+<form method="POST">
+    {% for column in columns %}
+    <div>
+        <label>
+            <input type="checkbox" name="{{ column.column_name }}" {% if column.visible %}checked{% endif %}>
+            {{ column.column_name }}
+        </label>
+    </div>
+    {% endfor %}
+    <button type="submit">Save Preferences</button>
+</form>

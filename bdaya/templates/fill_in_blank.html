@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fill in the blank</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img src="" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a
+              href="#"
+              class="dropdown-toggle"
+              onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="owner.html"> > Company owner</a></li>
+              <li><a href="organizer.html"> > Organizer</a></li>
+              <li><a href="administrator.html"> > Administrators</a></li>
+              <li><a href="manager.html"> > Managers</a></li>
+
+              <li>
+                <a href="manager to manager.html"> > Managers to manager</a>
+              </li>
+
+              <li>
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  onclick="toggleDropdown(event, 'nested-dropdown')"
+                >
+                  > Users <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="student.html"> > Students</a></li>
+                  <li><a href="employee.html"> > Employees</a></li>
+                </ul>
+              </li>
+              <li><a href="lectures.html"> > Lectures</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > Fill in blank </span>
+        </div>
+        <form method="POST"enctype="multipart/form-data">
+        <div class="question-container">
+          <div class="question-div">
+            <div class="textarea-div">
+              <textarea name="question_text" placeholder="Type your question here...">{{ question.question_text }}</textarea>
+            </div>
+            <div class="upload-div">
+                  <div class="blank-div">
+                    <h1 class="fill-in"><span>*</span>To set the correct answer for the blank just edit the text within the blank   </h1>
+                    <input type="text" class="answer-blank" value="{{ question.answer_text }}"name="answer" placeholder="answer">
+              
+                  </div>
+              
+              </div>
+              
+            <!-- Modal to display the image -->
+            <div id="imageModal" class="modal">
+              <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <img
+                  src="assets/excel-img.jpg"
+                  alt="How to upload an Excel file"
+                  id="modalImage"
+                />
+              </div>
+            </div>
+
+            <div class="dropdown-div">
+              <div class="dropdown">
+                  <label for="">Difficulty</label>
+                  <select name="difficulty">
+                      <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                      <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                      <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                  </select>
+              </div>
+
+              <div class="dropdown">
+                  <label for="">Importance</label>
+                  <select name="importance">
+                      <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                      <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                  </select>
+              </div>
+
+              <div class="dropdown">
+                  <label >Bloom's Taxonomy</label>
+                  <select name="bloom_taxonomy">
+                      <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                      <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                      <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                  </select>
+              </div>
+
+              <div class="dropdown">
+                  <label for="">Grade</label>
+                  <select name="grade">
+                      <option value="1" {% if question.grade == 1 %}selected{% endif %}>1</option>
+                      <option value="2" {% if question.grade == 2 %}selected{% endif %}>2</option>
+                      <option value="3" {% if question.grade == 3 %}selected{% endif %}>3</option>
+                  </select>
+              </div>
+              <div class="dropdown">
+              <label for="times">Time (S)</label>
+              <div class="input-container">
+               
+                <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+            </div>
+              </div>
+          </div>
+      
+          <div class="confirm-btns">
+            <div class="button-section">
+              <button class="save-btn">Save</button>
+            </div>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script src="Script.js"></script> -->
+   
+  </body>
+</html>

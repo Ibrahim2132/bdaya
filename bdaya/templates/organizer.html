@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Organizers</title>
+
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+      integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+       
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        }
+  
+      .hidden {
+        display: none;
+      }
+      /* لضبط موضع الرابط */
+a {
+  position: relative; /* لجعل النقطة الحمراء تظهر فوق العنصر */
+  display: inline-flex; /* لجعل الأيقونة والنص في صف واحد */
+  align-items: center;  /* محاذاة العناصر عموديًا */
+}
+
+/* النقطة الحمراء */
+.notification-dot {
+  width: 8px;             /* عرض النقطة */
+  height: 8px;            /* ارتفاع النقطة */
+  border-radius: 50%;      /* جعل النقطة دائرية */
+  background-color: red;   /* اللون الأحمر للنقطة */
+  position: absolute;      /* تحديد موضع النقطة */
+  top: -2px;               /* رفع النقطة قليلاً للأعلى */
+  left: 93%;              /* وضع النقطة إلى أقصى اليمين */
+  transform: translateX(10px); /* تحريك النقطة قليلاً إلى اليمين */
+  display: inline-block;    /* جعل النقطة تظهر بشكل بلوك مدمج */
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="organizer">  profile</a></li>
+              <li><a href="manager">  Managers</a></li>
+              <li><a href="managertomanger">  Managers to manager</a></li>
+  
+              <li>
+                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Show Data
+                  <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="company_cards">  company cards</a></li>
+                  <li><a href="show_adm">  show administrators</a></li>
+                  <li><a href="show_emp">  show employees</a></li>
+                  <li><a href="show_stu">  show students</a></li>
+  
+                </ul>
+              </li>
+              <!--
+              <li><a href="organizer">  Organizer</a></li>
+              <li><a href="administrator">  Administrators</a></li>
+              <li><a href="manager">  Managers</a></li>
+              <li><a href="managertomanger">  Managers to manager</a></li>-->
+             <!-- -->
+            
+            </ul>
+          </li>
+          <li>
+            <a href="notification_organizer">
+              <i class="fa-solid fa-bell"></i>
+              Notifications
+              {% if notification_dot_display %}
+                <span class="notification-dot"></span>
+              {% endif %}
+            </a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+
+      <!--Main section -->
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span> > Dashboard > Organizers </span>
+        </div>
+        
+        <div class="third-div">
+          {% if organizer_id %}
+          <h1>Organizer profile</h1>
+          <form method="POST">
+            <div class="input-container">
+              <input type="email" name="email" value="{{ organizer.email or ''}}" required />
+              <label>Email</label>
+          </div>
+            <div class="input-container">
+                <input type="text" name="name" value="{{ organizer.name }}" required />
+                <label>Name</label>
+            </div>
+            {% if c1 %}
+            <div class="input-container">
+              <input type="text" name="c1" value="{{ organizer.col1 or '' }}"required />
+              <label>{{ c1 }}</label>
+            </div>
+            {% endif %}
+      
+            {% if c2 %}
+            <div class="input-container">
+              <input type="text" name="c2" value="{{ organizer.col2 or '' }}"required />
+              <label>{{ c2 }}</label>
+            </div>
+            {% endif %}
+            <div class="input-row">
+            {% if c3 %}
+            <div class="input-container">
+              <input type="text" name="c3" value="{{ organizer.col3 or '' }}"required />
+              <label>{{ c3 }}</label>
+            </div>
+            {% endif %}
+      
+            {% if c4 %}
+            <div class="input-container">
+              <input type="text" name="c4"value="{{ organizer.col4 or ''}}" required />
+              <label>{{ c4 }}</label>
+            </div>
+            {% endif %}
+            </div>
+            {% if c5 %}
+            <div class="input-container">
+              <input type="text" name="c5" value="{{ organizer.col5 or ''}}"required />
+              <label>{{ c5 }}</label>
+            </div>
+            {% endif %}
+            <div class="uploade-btns">
+                <button class="edit-btn" type="submit">Update</button>
+            </div>
+        </form>
+        {% endif %}
+      <!--
+        <div class="search-filters" style="margin-top: 15px">
+          <div class="input-row">
+           
+            <div class="input-container">
+              <select id="column-select" required>
+                <option value="" disabled selected>Select Column</option>
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                {% if col_data.c1 %}
+                    <option value="col1">{{col_data.c1}}</option>
+                    {% endif %}
+                    {% if col_data.c2 %}
+                    <option value="col2">{{col_data.c2}}</option>
+                    {% endif %}
+                    {% if col_data.c3 %}
+                    <option value="col3">{{col_data.c3}}</option>
+                    {% endif %}
+                    {% if col_data.c4 %}
+                    <option value="col4">{{col_data.c4}}</option>
+                    {% endif %}
+                    {% if col_data.c5 %}
+                    <option value="col5">{{col_data.c5}}</option>
+                    {% endif %}
+              </select>
+              <label for="column-select">Select Column</label>
+            </div>
+        
+          
+            <div class="input-container">
+              <input type="text" id="value-input" placeholder="Enter value" required />
+              <label for="value-input">Filter value</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="table-section">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                {% if columns.c1 %}
+                <th>{{ columns.c1 }}</th>
+                {% endif %}
+                {% if columns.c2 %}
+                <th>{{ columns.c2 }}</th>
+                {% endif %}
+                {% if columns.c3 %}
+                <th>{{ columns.c3 }}</th>
+                {% endif %}
+                {% if columns.c4 %}
+                <th>{{ columns.c4 }}</th>
+                {% endif %}
+                {% if columns.c5 %}
+                <th>{{ columns.c5 }}</th>
+                {% endif %}
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for admin in administrators %}
+              <tr>
+                <td>{{ admin.id }}</td>
+                <td>{{ admin.name }}</td>
+                <td>{{ admin.email }}</td>
+                {% if columns.c1 %}
+                <td>{{ admin.col1 }}</td>
+                {% endif %}
+                {% if columns.c2 %}
+                <td>{{ admin.col2 }}</td>
+                {% endif %}
+                {% if columns.c3 %}
+                <td>{{ admin.col3 }}</td>
+                {% endif %}
+                {% if columns.c4 %}
+                <td>{{ admin.col4 }}</td>
+                {% endif %}
+                {% if columns.c5 %}
+                <td>{{ admin.col5 }}</td>
+                {% endif %}
+                <td>
+                  <i class="fa-solid fa-trash-can"></i>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      -->
+          </div>
+        </form>
+        <div class="fourth-div">
+          <h1 class="div-title">Administrators Information to Record</h1>
+          <form method="POST" action="{{ url_for('organizer') }}">
+            <table id="dynamicTable">
+              <thead>
+                <tr id="headerRow">
+                  <th>Record Field 1</th>
+                  <th class="{% if not col_data.c2 %}hidden{% endif %}">Record Field 2</th>
+                  <th class="{% if not col_data.c3 %}hidden{% endif %}">Record Field 3</th>
+                  <th class="{% if not col_data.c4 %}hidden{% endif %}">Record Field 4</th>
+                  <th class="{% if not col_data.c5 %}hidden{% endif %}">Record Field 5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id="inputRow">
+                  <td>
+                    <input
+                      class="col-input"
+                      type="text"
+                      name="column1"
+                      value="{{ col_data.c1 }}"
+                    />
+                  </td>
+                  <td class="{% if not col_data.c2 %}hidden{% endif %}">
+                    <input
+                      class="col-input"
+                      type="text"
+                      name="column2"
+                      value="{{ col_data.c2 }}"
+                    />
+                  </td>
+                  <td class="{% if not col_data.c3 %}hidden{% endif %}">
+                    <input
+                      class="col-input"
+                      type="text"
+                      name="column3"
+                      value="{{ col_data.c3 }}"
+                    />
+                  </td>
+                  <td class="{% if not col_data.c4 %}hidden{% endif %}">
+                    <input
+                      class="col-input"
+                      type="text"
+                      name="column4"
+                      value="{{ col_data.c4 }}"
+                    />
+                  </td>
+                  <td class="{% if not col_data.c5 %}hidden{% endif %}">
+                    <input
+                      class="col-input"
+                      type="text"
+                      name="column5"
+                      value="{{ col_data.c5 }}"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="upload-btns">
+              <button type="button" id="addColumn" class="add-btn">
+                + Add Column
+              </button>
+              <button type="submit" class="upload-btn">Save Changes</button>
+            </div>
+          </form>
+        </div>
+        
+        
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('organizer') }}">
+          <div class="fourth-div">
+            <div class="upload-section">
+              <div class="input-container">
+                <input type="text" name="company_name" id="company_name" >
+                <label>Company branches</label>
+              </div>
+              <div class="uploade-btns">
+               
+                  <input type="file"  class="add-btn" name="excel_file" accept=".xlsx,.xls">
+                  <button type="submit" class="upload-btn">Upload Excel File</button>
+              </form>
+              </div>
+            </div>
+            <div class="table-section">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Company branches</th>
+                    <th>Number of Organizers</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for company in company_names %}
+                    <tr>
+                      <td>{{ company.name }}</td>
+                      <td>{{ company.code }}</td>
+                      <td>
+                        <a href="{{ url_for('delete_company', company_id=company.id) }}">
+                          <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <div class="fifth-div">
+          <div class="send-invitation">
+            <label class="invitation">Code for Administrators</label>
+            <div class="copy">
+              <h3>{{ sector_code+"A" }}</h3>
+              <i class="fas fa-copy" id="copyIcon"onclick="copyToClipboard()"></i>
+              <span
+                id="copyMessage"
+                style="display: none; color: #0d7c66; margin-left: 10px"
+                >copied!</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+       const maxColumns = 5;
+        let currentVisibleColumns = 1;
+    
+        const addColumnButton = document.getElementById('addColumn');
+        const headerColumns = document.querySelectorAll('#headerRow .hidden');
+        const inputColumns = document.querySelectorAll('#inputRow .hidden');
+    
+        addColumnButton.addEventListener('click', () => {
+          if (currentVisibleColumns < maxColumns) {
+            headerColumns[currentVisibleColumns - 1].classList.remove('hidden');
+            inputColumns[currentVisibleColumns - 1].classList.remove('hidden');
+            currentVisibleColumns++;
+          } else {
+            alert('Maximum columns reached!');
+          }
+        });
+  document.getElementById('column-select').addEventListener('change', filterData);
+document.getElementById('value-input').addEventListener('input', filterData);
+
+function filterData() {
+  var column = document.getElementById('column-select').value;
+  var value = document.getElementById('value-input').value.toLowerCase();
+  
+  var rows = document.querySelectorAll('table tbody tr');
+  rows.forEach(row => {
+    var cell = row.querySelector('td:nth-child(' + (getColumnIndex(column) + 1) + ')');
+    if (cell && cell.textContent.toLowerCase().includes(value)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+}
+
+function getColumnIndex(column) {
+  switch (column) {
+    case 'name': return 1;
+    case 'email': return 2;
+    case 'col1': return 3;
+    case 'col2': return 4;
+    case 'col3': return 5;
+    case 'col4': return 6;
+    case 'col5': return 7;
+    default: return -1;
+  }
+}
+      addColumnButton.addEventListener("click", () => {
+        if (currentVisibleColumns < maxColumns) {
+          headerColumns[currentVisibleColumns - 1].classList.remove("hidden");
+          inputColumns[currentVisibleColumns - 1].classList.remove("hidden");
+          currentVisibleColumns++;
+        } else {
+          alert("Maximum columns reached!");
+        }
+      });
+
+      //question icon for how to upload excel file
+
+      // Select the Font Awesome icon and helper text
+      const questionIcon = document.querySelector(".question-icon");
+      const helperText = document.querySelector(".helper-text");
+
+      // Check if elements exist before adding event listener
+      if (questionIcon && helperText) {
+        // Toggle helper text visibility on click
+        questionIcon.addEventListener("click", () => {
+          helperText.style.display =
+            helperText.style.display === "block" ? "none" : "block";
+        });
+      } else {
+        console.warn("Question icon or helper text element not found.");
+      }
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
