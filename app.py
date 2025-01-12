@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify,flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import desc
+
 import random
 from datetime import datetime
 from openpyxl import load_workbook
@@ -82,18 +83,18 @@ class Question_Fill_in_blank(db.Model):
     answer_text = db.Column(db.Text, nullable=True) 
 
 class Answer_Multiple_Multiple_choice(db.Model):
-    answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    question_id = db.Column(db.Integer, nullable=False)  
-    answer_text = db.Column(db.Text, nullable=True) 
-    audio_path = db.Column(db.String(255), nullable=True)  
-    photo_path = db.Column(db.String(255), nullable=True)  
-    is_correct = db.Column(db.Boolean, default=False)  
+    answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # معرف الإجابة
+    question_id = db.Column(db.Integer, nullable=False)  # ربط الإجابة بالسؤال
+    answer_text = db.Column(db.Text, nullable=True)  # نص الإجابة (اختياري)
+    audio_path = db.Column(db.String(255), nullable=True)  # رابط الملف الصوتي (اختياري)
+    photo_path = db.Column(db.String(255), nullable=True)  # رابط الصورة (اختياري)
+    is_correct = db.Column(db.Boolean, default=False)  # هل الإجابة صحيحة؟
 
 class Answer_sequence(db.Model):
-    answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)  
-    question_id = db.Column(db.Integer, nullable=False)  
-    answer_text = db.Column(db.Text, nullable=True)  
-    index = db.Column(db.Integer, default=False) 
+    answer_id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # معرف الإجابة
+    question_id = db.Column(db.Integer, nullable=False)  # ربط الإجابة بالسؤال
+    answer_text = db.Column(db.Text, nullable=True)  # نص الإجابة (اختياري)
+    index = db.Column(db.Integer, default=False)  # هل الإجابة صحيحة؟
 
 class WordPuzzleGame(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -146,8 +147,8 @@ class Match(db.Model):
     difficulty = db.Column(db.String(50), nullable=False)
     words = db.Column(db.String(255), nullable=False)
 
-class Chapter(db.Model):
-    id = db.Column(db.Integer, primary_key=True, default=lambda: random.randint(100000, 9999999))
+class Lessons1(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     id_chapter=db.Column(db.Integer, nullable=False)
     title = db.Column(db.String(120), nullable=False)  
     image_path = db.Column(db.String(200), nullable=True) 
@@ -163,8 +164,8 @@ class Exam(db.Model):
     exam_type = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow) 
 
-class category(db.Model):
-    id = db.Column(db.Integer, primary_key=True, default=lambda: random.randint(100000, 9999999))
+class Lesson(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)  
     image_path = db.Column(db.String(200), nullable=True)  
     created_at = db.Column(db.DateTime, default=datetime.now)  
@@ -215,6 +216,7 @@ class head(db.Model):
     col5 = db.Column(db.String(100), nullable=True)
     branch = db.Column(db.String(100), nullable=True) 
 
+
 class Employee6(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_admin=db.Column(db.Integer,nullable=False)
@@ -237,8 +239,7 @@ class Employee6(db.Model):
     branch = db.Column(db.String(100), nullable=True) 
     manager_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=True)
     manager_name = db.Column(db.String(50), nullable=True)
-    is_manager = db.Column(db.Boolean, default=False)
-    is_head = db.Column(db.String(100), default="fff")
+
 
 class organizer2(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -1565,7 +1566,7 @@ def redirect_exam(exam_type, exam_id):
         return redirect(url_for('traslate', exam_id=exam_id))
     elif exam_type == 16:  
         return redirect(url_for('traslate_icon', exam_id=exam_id))
-    elif exam_type == 17:
+    elif exam_type == 17:  
         return redirect(url_for('quess', exam_id=exam_id))
     else:
         return redirect(url_for('general_exam_page', exam_id=exam_id))
@@ -1604,40 +1605,32 @@ def submit_exam(lesson_id):
 
 @app.route('/exam_cards', methods=['GET', 'POST'])
 def exam_cards():
-    employee_id = session.get('employee_id')
-    sector_code = session.get('sector_code')
+    lessons = Lesson.query.all()
+    
 
-    if not sector_code or not employee_id:
-        return redirect(url_for('access'))
-
-    lessons = category.query.filter_by(employee_id=employee_id).all()
     lessons_with_counts = []
     for lesson in lessons:
-        lesson_count = Chapter.query.filter_by(id_chapter=lesson.id).count()
+        lesson_count = Lessons1.query.filter_by(id_chapter=lesson.id).count()
         lessons_with_counts.append({
             'lesson': lesson,
             'lesson_count': lesson_count
         })
 
-    return render_template('exam_cards.html', lessons_with_counts=lessons_with_counts,sector_code=sector_code)
+    return render_template('exam_cards.html', lessons_with_counts=lessons_with_counts)
 
 
 @app.route('/lesson_cards', methods=['GET', 'POST'])
 def lesson_cards():
-    employee_id = session.get('employee_id')
-    sector_code = session.get('sector_code')
-    if not sector_code or not employee_id:
-        return redirect(url_for('access'))
     chapter_id = request.args.get('chapter_id', type=int)
-    lessons = Chapter.query.filter_by(id_chapter=chapter_id).all()
-    return render_template('lesson_cards.html', lessons=lessons,sector_code=sector_code)
+    lessons = Lessons1.query.filter_by(id_chapter=chapter_id).all()
+    return render_template('lesson_cards.html', lessons=lessons)
 
 
 @app.route('/add_lessons', methods=['GET', 'POST'])
 def add_lessons():
     title = request.form.get('title') 
     image = request.files.get('image')  
-    employee_id = session.get('employee_id')
+    employee_id = session.get('user_id')
     print(employee_id)
     print(title)
     
@@ -1648,7 +1641,7 @@ def add_lessons():
         return "Title, Employee ID, and Chapter ID are required", 400
 
   
-    new_lesson = Chapter(
+    new_lesson = Lessons1(
         title=title,
         employee_id=employee_id,
         id_chapter=chapter_id,
@@ -1669,7 +1662,7 @@ def add_lessons():
 
 @app.route('/edit_lessons/<int:lesson_id>', methods=['POST'])
 def edit_lessons(lesson_id):
-    lesson = Chapter.query.get_or_404(lesson_id)
+    lesson = Lessons1.query.get_or_404(lesson_id)
     chapter_id = lesson.id_chapter
     title = request.form.get('title')
 
@@ -1681,7 +1674,7 @@ def edit_lessons(lesson_id):
 
 @app.route('/delete_lessons/<int:lesson_id>', methods=['POST'])
 def delete_lessons(lesson_id):
-    lesson = Chapter.query.get_or_404(lesson_id)
+    lesson = Lessons1.query.get_or_404(lesson_id)
     chapter_id = lesson.id_chapter
     if lesson.image_path:
         os.remove(lesson.image_path) 
@@ -1693,11 +1686,12 @@ def delete_lessons(lesson_id):
 def add_lesson():
     title = request.form.get('title') 
     image = request.files.get('image')  
-    employee_id = session.get('employee_id')
+    employee_id = session.get('user_id')
+    
     if not title or not employee_id:
         return "Title and Employee ID are required", 400
 
-    new_lesson = category(
+    new_lesson = Lesson(
         title=title,
         employee_id=employee_id,
         image_path=None  
@@ -1716,7 +1710,7 @@ def add_lesson():
 
 @app.route('/edit_lesson/<int:lesson_id>', methods=['POST'])
 def edit_lesson(lesson_id):
-    lesson = category.query.get_or_404(lesson_id)
+    lesson = Lesson.query.get_or_404(lesson_id)
     title = request.form.get('title')
 
     if title:
@@ -1728,12 +1722,13 @@ def edit_lesson(lesson_id):
 
 @app.route('/delete_lesson/<int:lesson_id>', methods=['POST'])
 def delete_lesson(lesson_id):
-    lesson = category.query.get_or_404(lesson_id)
+    lesson = Lesson.query.get_or_404(lesson_id)
     if lesson.image_path:
         os.remove(lesson.image_path) 
     db.session.delete(lesson)
     db.session.commit()
     return redirect(url_for('exam_cards'))
+
 
 @app.route('/company_cards', methods=['GET', 'POST'])
 def company_cards():
@@ -1746,20 +1741,20 @@ def company_cards():
     col4 = JobTitle.query.filter_by(code=sector_code).all()
     col5 = specializationEmployee.query.filter_by(code=sector_code).all()
     data = []
-    employees = Employee6.query.filter_by(code=sector_code).all()
+
     department_employees = DepartmentEmployee.query.filter_by(code=sector_code).all()
     department_employees1 = DepartmentEmployee1.query.filter_by(code=sector_code).all()
     for branch in branches:
         branch_name = branch.name
         branch_code = branch.code
 
-        total_employees = Employee6.query.filter_by(branch=branch_name,code=sector_code).count()
-        total_managers = Employee6.query.filter_by(branch=branch_name,code=sector_code,is_manager=True).count()
-        total_heads = Employee6.query.filter_by(branch=branch_name,code=sector_code,is_head="ttt").count()
+        total_employees = Employee6.query.filter_by(branch=branch_name).count()
+        total_managers = ManagerEmployee.query.filter_by(branch=branch_name).count()
+        total_heads = head.query.filter_by(branch=branch_name).count()
 
-        head_details = head.query.filter_by(branch=branch_name,code=sector_code).all()
-        manager_details = ManagerEmployee.query.filter_by(branch=branch_name,code=sector_code).all()
-        employee_details = Employee6.query.filter_by(branch=branch_name,code=sector_code).all()
+        head_details = head.query.filter_by(branch=branch_name).all()
+        manager_details = ManagerEmployee.query.filter_by(branch=branch_name).all()
+        employee_details = Employee6.query.filter_by(branch=branch_name).all()
 
       
         col2_counts = {}
@@ -1806,7 +1801,7 @@ def company_cards():
             'col5_counts': col5_counts,
         })
 
-    return render_template('company_cards.html',employees=employees, data=data,sector_id=sector_id,sector_code=sector_code)
+    return render_template('company_cards.html', data=data,sector_id=sector_id,sector_code=sector_code)
 
 
 
@@ -1819,7 +1814,7 @@ def company_cards_adm():
     col4 = JobTitle.query.filter_by(code=sector_code,id_admin=user_id,).all()
     col5 = specializationEmployee.query.filter_by(code=sector_code,id_admin=user_id).all()
     data = []
-    employees = Employee6.query.filter_by(code=sector_code,id_admin=user_id).all()
+
     department_employees = DepartmentEmployee.query.filter_by(code=sector_code,id_admin=user_id,).all()
     department_employees1 = DepartmentEmployee1.query.filter_by(code=sector_code,id_admin=user_id,).all()
     for branch in branches:
@@ -1827,8 +1822,8 @@ def company_cards_adm():
         branch_code = branch.code
 
         total_employees = Employee6.query.filter_by(branch=branch_name,id_admin=user_id).count()
-        total_managers = Employee6.query.filter_by(branch=branch_name,id_admin=user_id,is_manager=True).count()
-        total_heads = Employee6.query.filter_by(branch=branch_name,id_admin=user_id,is_head="ttt").count()
+        total_managers = ManagerEmployee.query.filter_by(branch=branch_name,id_admin=user_id,).count()
+        total_heads = head.query.filter_by(branch=branch_name,id_admin=user_id,).count()
 
         head_details = head.query.filter_by(branch=branch_name,id_admin=user_id).all()
         manager_details = ManagerEmployee.query.filter_by(branch=branch_name,id_admin=user_id,).all()
@@ -1879,7 +1874,7 @@ def company_cards_adm():
             'col5_counts': col5_counts,
         })
 
-    return render_template('company_cards_adm.html', data=data,sector_code=sector_code,employees=employees)
+    return render_template('company_cards_adm.html', data=data,sector_code=sector_code)
 
 ALLOWED_EXTENSIONS_T_F = {'png', 'jpg', 'jpeg', 'gif', 'mp3', 'wav'}
 
@@ -2092,15 +2087,6 @@ def signup_eml():
                 new_employee = Employee6(code=sector_code, username=username, email=email,id_admin=id_admin, password=password)
                 db.session.add(new_employee)
                 db.session.commit()
-                new_notification = Notification_admin(
-                subject=f"New Employee Added",
-                message=f"A new employee {username}, has been added to Noor Academy for Sustainable Development.",
-                id_user=id_admin,
-                company_code=sector_code,
-                timestamp=datetime.now()
-                )
-                db.session.add(new_notification)
-                db.session.commit()
 
                 session['employee_id'] = new_employee.id
                 session['employee_code'] = new_employee.code
@@ -2183,7 +2169,6 @@ def signup_organizer():
         
         db.session.add(new_organizer)
         db.session.commit()
-
 
         new_notification = Notification_owner(
             subject="New Organizer Added",
@@ -2323,8 +2308,9 @@ def signup_administrator():
                 subject=f"Hello {name}",
                 message = f"Welcome to Noor Academy for Sustainable Development, where we focus on nurturing human potential sustainably. We wish you a successful and continuous learning journey filled with growth.",
                 id_user=new_admin.id,
-                company_code=sector_code,
-                timestamp=datetime.now()
+                company_code=sector_code
+                ,
+                 timestamp=datetime.now()
             )
             db.session.add(new_notification)
             db.session.commit()
@@ -2353,8 +2339,6 @@ def signup_administrator():
 def employee_profile():
     employee_id = session.get('employee_id')
     sector_code = session.get('sector_code')
-    if not sector_code or not employee_id:
-        return redirect(url_for('access'))
     employee_data = Employee6.query.filter_by(id=employee_id).first()
     col1 = DepartmentEmployee1.query.filter_by(code=sector_code,id_admin=employee_data.id_admin).all()
     col2 = DepartmentEmployee.query.filter_by(code=sector_code,id_admin=employee_data.id_admin).all()
@@ -2413,8 +2397,6 @@ def employee_profile():
 def Studentprofile():
     student_id=session.get('student_id')
     sector_code = session.get('sector_code')
-    if not sector_code or not student_id:
-        return redirect(url_for('access'))
     student_data = SectorStudent8.query.filter_by(id=student_id).first() 
     student_name = ColStudent.query.filter_by(code=sector_code,id_admin=student_data.id_admin).first()
     print(student_data.id_admin)
@@ -2476,8 +2458,8 @@ def delete_specialization(specialization_id):
 @app.route('/signup_student', methods=['GET', 'POST'])
 def signup_student():
     
-    sector_code = request.args.get('sector_code') 
-    id_admin = request.args.get('id')  
+    sector_code = request.args.get('sector_code')  # لاحظ التسمية حسب الرابط
+    id_admin = request.args.get('id')  # لاحظ التسمية حسب الرابط
     print(sector_code)
     print(id_admin)
   
@@ -2507,15 +2489,6 @@ def signup_student():
             )
             db.session.add(new_sector)
             db.session.commit()
-            new_notification = Notification_admin(
-                subject=f"New Student Added",
-                message=f"A new student {username}, has been added to Noor Academy for Sustainable Development. The student is currently awaiting your approval.",
-                id_user=id_admin,
-                company_code=sector_code,
-                timestamp=datetime.now()
-            )
-            db.session.add(new_notification)
-            db.session.commit()
 
             session['student_id'] = new_sector.id
             session['sector_code'] = new_sector.code
@@ -2540,14 +2513,15 @@ def validate_code():
     sector = Sector.query.filter_by(code=sector_code).first()  
 
     if sector:
-        if user_type == 'S': 
+        if user_type == 'S':  # طالب
             return redirect(url_for('signup_student', sector_code=sector_code, id=person_code))
-        elif user_type == 'E':  
+        elif user_type == 'E':  # موظف
             return redirect(url_for('signup_eml', sector_code=sector_code, id=person_code))
         else:
-            if user_type == 'A':
+            # باقي الأنواع كما هي
+            if user_type == 'A':  # مسؤول
                 return redirect(url_for('signup_administrator', code=sector_code))
-            elif user_type == 'M':  
+            elif user_type == 'M':  # منظم
                 return redirect(url_for('signup_organizer', code=sector_code))
             else:
                 print("Invalid person code.")
@@ -2802,13 +2776,12 @@ def administrator():
     sector_id = session.get('sector_id')
     unaccepted_students = SectorStudent8.query.filter_by(accepted=False, code=sector_code,id_admin=user_id).all()
     accepted_students = SectorStudent8.query.filter_by(accepted=True, code=sector_code,id_admin=user_id).all()
-    if not sector_code or not (user_id):
+    if not sector_code or not (organizer_id or sector_id or user_id):
         return redirect(url_for('access'))
     col_name = ColAdministrator.query.filter_by(code=sector_code).first()
    
     col_data =  administrator2.query.filter_by(id=user_id).first()
     unread_notifications = Notification_admin.query.filter_by(company_code=sector_code, viewed=False,id_user=user_id).all()
-    print(unread_notifications)
     if unread_notifications:
         notification_dot_display = True
     else:
@@ -2827,9 +2800,9 @@ def administrator():
         db.session.commit()
 
 
-        return redirect(url_for('administrator',notification_dot_display=notification_dot_display))
+        return redirect(url_for('administrator',unread_notifications=unread_notifications))
 
-    return render_template('administrator.html',notification_dot_display=notification_dot_display, sector_code=sector_code, col_data=col_data,col_name=col_name,unaccepted_students=unaccepted_students,
+    return render_template('administrator.html',unread_notifications=unread_notifications, sector_code=sector_code, col_data=col_data,col_name=col_name,unaccepted_students=unaccepted_students,
         accepted_students=accepted_students,user_id=user_id
     )
 
@@ -2917,7 +2890,7 @@ def employee():
     sector_code = session.get('sector_code')
     sector_id = session.get('sector_id')
     sector_code_display = f"{sector_code}E{user_id}"  
-    if not sector_code or not (user_id):
+    if not sector_code or not (organizer_id or sector_id or user_id):
         return redirect(url_for('access'))
     
     student_data = ColEmployee.query.filter_by(code=sector_code,id_admin=user_id).first()
@@ -3142,7 +3115,7 @@ def student():
     organizer_id = session.get('organizer_id')
     sector_code = session.get('sector_code')
     sector_id = session.get('sector_id')
-    if not sector_code or not (user_id):
+    if not sector_code or not (organizer_id or sector_id or user_id):
         return redirect(url_for('access'))
     
     student_data = ColStudent.query.filter_by(code=sector_code,id_admin=user_id).first()
@@ -3653,7 +3626,7 @@ def manager_adm():
     organizer_id = session.get('organizer_id')
     sector_code = session.get('sector_code')
     sector_id = session.get('sector_id')
-    if not sector_code or not ( user_id):
+    if not sector_code or not (organizer_id or sector_id or user_id):
         return redirect(url_for('access'))
     employee_name = ColEmployee.query.filter_by(code=sector_code,id_admin=user_id,).first()
     employees = Employee6.query.filter_by(code=sector_code,id_admin=user_id).all()
@@ -3668,7 +3641,7 @@ def managertomanger_adm():
     organizer_id = session.get('organizer_id')
     sector_code = session.get('sector_code')
     sector_id = session.get('sector_id')
-    if not sector_code or not (user_id):
+    if not sector_code or not (organizer_id or sector_id or user_id):
         return redirect(url_for('access'))
     employee_name = ColEmployee.query.filter_by(code=sector_code,id_admin=user_id).first()
     managers = ManagerEmployee.query.filter_by(code=sector_code,id_admin=user_id).all() 
@@ -3686,15 +3659,10 @@ def assign_manager1_adm():
         if manager_id and employee_ids:
             manager = ManagerEmployee.query.get(manager_id)  
             if manager:
-                manager_to_update = Employee6.query.filter_by(email=manager.email).first()
-                if manager_to_update:
-                    manager_to_update.is_head = "ttt"
-                    db.session.commit()
                 
                 for emp_id in employee_ids:
                     employee = ManagerEmployee.query.get(emp_id)
                     if employee:
-
     
                         employee.manager_id = manager.id
                         employee.manager_name = manager.username
@@ -3737,9 +3705,6 @@ def assign_manager_adm():
         if manager_id and employee_ids:
             manager = Employee6.query.get(manager_id) 
             if manager:
-                if not manager.is_manager:  
-                    manager.is_manager = True
-                    db.session.commit()
                 for emp_id in employee_ids:
                     employee = Employee6.query.get(emp_id)
                     if employee:
@@ -3865,25 +3830,23 @@ def managertomanger():
 @app.route('/assign_manager1', methods=['POST'])
 def assign_manager1():
     if request.method == 'POST':
+
         manager_id = request.form.get('manager')  
+    
         employee_ids = request.form.getlist('employees')  
 
         if manager_id and employee_ids:
-            manager = ManagerEmployee.query.get(manager_id) 
+            manager = ManagerEmployee.query.get(manager_id)  
             if manager:
-                manager_to_update = Employee6.query.filter_by(email=manager.email).first()
-                if manager_to_update:
-                    manager_to_update.is_head = "ttt"
-                    db.session.commit()
-
+                
                 for emp_id in employee_ids:
                     employee = ManagerEmployee.query.get(emp_id)
                     if employee:
+    
                         employee.manager_id = manager.id
                         employee.manager_name = manager.username
                         db.session.commit()
 
-                # التحقق من وجود المدير في جدول head
                 existing_manager = head.query.filter_by(email=manager.email).first()
                 if not existing_manager:
                     manager_employee = head(
@@ -3910,7 +3873,6 @@ def assign_manager1():
                     db.session.commit() 
 
                 return redirect('/managertomanger') 
-    
     return redirect(url_for('managertomanger'))
 
 @app.route('/assign_manager', methods=['GET', 'POST'])
@@ -3922,21 +3884,19 @@ def assign_manager():
         if manager_id and employee_ids:
             manager = Employee6.query.get(manager_id) 
             if manager:
-                # تعيين الموظف كمدير (is_manager = True)
-                if not manager.is_manager:  # إذا لم يكن المدير الحالي بالفعل مديرًا
-                    manager.is_manager = True
-                    db.session.commit()
-
                 for emp_id in employee_ids:
                     employee = Employee6.query.get(emp_id)
                     if employee:
-                        # تعيين المدير للموظف
+                  
                         employee.manager_id = manager.id
                         employee.manager_name = manager.username
+                    
                         db.session.commit()
 
-                # نقل المدير إلى جدول ManagerEmployee إذا لم يكن موجودًا بالفعل
                 existing_manager = ManagerEmployee.query.filter_by(email=manager.email).first()
+                print(manager.id_admin)
+                print(manager.id_admin)
+                print(manager.id_admin)
                 if not existing_manager:
                     manager_employee = ManagerEmployee(
                         id_admin=manager.id_admin,
@@ -3971,7 +3931,5 @@ def assign_manager():
 
 
 
-
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 4000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
